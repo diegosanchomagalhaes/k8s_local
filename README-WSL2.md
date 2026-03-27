@@ -17,12 +17,12 @@ O WSL2 precisa ser configurado adequadamente para rodar:
 
 - **k3d cluster** (1 server + 2 agents)
 - **PostgreSQL 16** com databases (n8n, grafana, prometheus)
-- **MariaDB 12.0.2** com database (glpi)
-- **Redis 8.2.3** cache compartilhado (DB0-DB3)
+- **MariaDB 12.2.2** com database (glpi)
+- **Redis 8.6.2** cache compartilhado (DB0-DB3)
 - **n8n 1.118.2** com processamento de workflows
-- **Grafana 12.2.1** dashboards e monitoramento
-- **Prometheus v3.7.3** métricas e alertas
-- **GLPI 11.0.1** service desk e inventário
+- **Grafana 12.4.2** dashboards e monitoramento
+- **Prometheus v3.10.0** métricas e alertas
+- **GLPI 11.0.6** service desk e inventário
 - **cert-manager** e **Traefik**
 
 ## ⚙️ Configuração Recomendada

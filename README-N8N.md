@@ -20,10 +20,10 @@
 
 ### Características do Deploy
 
-- **Versão**: n8n 1.119.1
+- **Versão**: n8n 2.13.4
 - **Namespace**: `n8n`
 - **Banco de dados**: PostgreSQL (infraestrutura compartilhada)
-- **Cache**: Redis 8.2.3 (DB0 - performance otimizada)
+- **Cache**: Redis 8.6.2 (DB0 - performance otimizada)
 - **Persistência**: hostPath em `/home/dsm/cluster/applications/n8n/` (TRUE PaaS)
 - **Acesso**: HTTPS via Ingress (porta 8443)
 - **Scaling**: HPA (Horizontal Pod Autoscaler)
@@ -32,13 +32,13 @@
 
 ### 🔐 Acesso à Aplicação
 
-| Item            | Valor                                                      | Observação                                  |
-| --------------- | ---------------------------------------------------------- | ------------------------------------------- |
-| 🌐 **URL**      | `https://n8n.local.127.0.0.1.nip.io:8443`                  | Usar sempre HTTPS na porta 8443             |
-| 👤 **Usuário**  | _Criar no primeiro acesso_                                 | Registro obrigatório na primeira execução   |
-| 🔑 **Senha**    | _Definir no cadastro_                                      | Escolha uma senha forte (min. 8 caracteres) |
-| 💾 **Database** | PostgreSQL 16 (`postgres.postgres.svc.cluster.local:5432`) | Database: `n8n`                             |
-| 🗄️ **Cache**    | Redis 8.2.3 (`redis.redis.svc.cluster.local:6379`)         | Database: DB0                               |
+| Item            | Valor                                                         | Observação                                  |
+| --------------- | ------------------------------------------------------------- | ------------------------------------------- |
+| 🌐 **URL**      | `https://n8n.local.127.0.0.1.nip.io:8443`                     | Usar sempre HTTPS na porta 8443             |
+| 👤 **Usuário**  | _Criar no primeiro acesso_                                    | Registro obrigatório na primeira execução   |
+| 🔑 **Senha**    | _Definir no cadastro_                                         | Escolha uma senha forte (min. 8 caracteres) |
+| 💾 **Database** | PostgreSQL 16.13 (`postgres.postgres.svc.cluster.local:5432`) | Database: `n8n`                             |
+| 🗄️ **Cache**    | Redis 8.6.2 (`redis.redis.svc.cluster.local:6379`)            | Database: DB0                               |
 
 > ⚠️ **IMPORTANTE**:
 >
@@ -56,7 +56,7 @@ k8s/apps/n8n/
 ├── n8n-namespace.yaml          # Namespace dedicado
 ├── n8n-secret-db.yaml          # Credenciais completas (DB + Redis)
 ├── n8n-secret-db.yaml.template # Template seguro
-├── n8n-deployment.yaml         # Deployment n8n 1.119.1
+├── n8n-deployment.yaml         # Deployment n8n 2.13.4
 ├── n8n-service.yaml           # Service ClusterIP
 ├── n8n-hpa.yaml               # Auto-scaling (CPU + Memória)
 ├── n8n-certificate.yaml       # Certificado TLS automático
@@ -112,7 +112,13 @@ stringData:
   QUEUE_BULL_REDIS_PORT: "6379"
   QUEUE_BULL_REDIS_PASSWORD: YOUR_REDIS_PASSWORD_HERE
   QUEUE_BULL_REDIS_DB: "0" # DB0 exclusively for n8n queue and cache
+
+  # Encryption (OBRIGATÓRIO no n8n v2)
+  # Gere com: openssl rand -hex 32
+  N8N_ENCRYPTION_KEY: YOUR_STRONG_ENCRYPTION_KEY_HERE
 ```
+
+> ⚠️ **n8n v2**: `N8N_ENCRYPTION_KEY` é obrigatório. Gere com `openssl rand -hex 32` e guarde com segurança (não pode ser alterado depois sem perda de credenciais criptografadas).
 
 > 📝 **Redis Database**: n8n utiliza **Redis DB0** exclusivamente para filas (Bull Queue) e cache. Este database é separado dos outros aplicativos (Grafana=DB1, GLPI=DB2, Prometheus=DB3).
 

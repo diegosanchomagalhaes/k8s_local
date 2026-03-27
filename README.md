@@ -5,26 +5,26 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![k3d](https://img.shields.io/badge/k3d-v5.8.3-blue)](https://k3d.io/)
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-blue)](https://www.postgresql.org/)
-[![MariaDB](https://img.shields.io/badge/MariaDB-12.0.2-orange)](https://mariadb.org/)
-[![Redis](https://img.shields.io/badge/Redis-8.2.3-red)](https://redis.io/)
+[![MariaDB](https://img.shields.io/badge/MariaDB-12.2.2-orange)](https://mariadb.org/)
+[![Redis](https://img.shields.io/badge/Redis-8.6.2-red)](https://redis.io/)
 [![n8n](https://img.shields.io/badge/n8n-1.118.2-orange)](https://n8n.io/)
-[![Grafana](https://img.shields.io/badge/Grafana-12.2.1-orange)](https://grafana.com/)
-[![Prometheus](https://img.shields.io/badge/Prometheus-v3.7.3-orange)](https://prometheus.io/)
-[![GLPI](https://img.shields.io/badge/GLPI-11.0.1-blue)](https://glpi-project.org/)
-[![Zabbix](https://img.shields.io/badge/Zabbix-7.4.5-red)](https://www.zabbix.com/)
+[![Grafana](https://img.shields.io/badge/Grafana-12.4.2-orange)](https://grafana.com/)
+[![Prometheus](https://img.shields.io/badge/Prometheus-v3.10.0-orange)](https://prometheus.io/)
+[![GLPI](https://img.shields.io/badge/GLPI-11.0.6-blue)](https://glpi-project.org/)
+[![Zabbix](https://img.shields.io/badge/Zabbix-7.4.8-red)](https://www.zabbix.com/)
 [![cert-manager](https://img.shields.io/badge/cert--manager-v1.19.0-green)](https://cert-manager.io/)
 
 ## 🎯 **Status Atual - Infraestrutura Completa**
 
 - ✅ **k3d Cluster**: 1 server + 2 agents + LoadBalancer com volume bind real
-- ✅ **PostgreSQL 16**: Persistência hostPath + databases para n8n/grafana/prometheus/zabbix
-- ✅ **MariaDB 12.0.2**: Banco dedicado GLPI + zabbix_proxy + persistência hostPath
-- ✅ **Redis 8.2.3**: Cache compartilhado com databases separados (DB0-DB4)
+- ✅ **PostgreSQL 16.13**: Persistência hostPath + databases para n8n/grafana/prometheus/zabbix
+- ✅ **MariaDB 12.2.2**: Banco dedicado GLPI + zabbix_proxy + persistência hostPath
+- ✅ **Redis 8.6.2**: Cache compartilhado com databases separados (DB0-DB4)
 - ✅ **n8n 1.118.2**: HTTPS + TLS automático + PostgreSQL + Redis cache + HPA
-- ✅ **Grafana 12.2.1**: Dashboards + PostgreSQL + Redis + HPA
-- ✅ **Prometheus v3.7.3**: Métricas + alertas + PostgreSQL + Redis + HPA
-- ✅ **GLPI 11.0.1**: Service Desk + MariaDB + Redis + HPA
-- ✅ **Zabbix 7.4.5**: Monitoramento completo (9 componentes) + 7 HPAs + PostgreSQL + MariaDB + Redis
+- ✅ **Grafana 12.4.2**: Dashboards + PostgreSQL + Redis + HPA
+- ✅ **Prometheus v3.10.0**: Métricas + alertas + PostgreSQL + Redis + HPA
+- ✅ **GLPI 11.0.6**: Service Desk + MariaDB + Redis + HPA
+- ✅ **Zabbix 7.4.8**: Monitoramento completo (9 componentes) + 7 HPAs + PostgreSQL + MariaDB + Redis
 - ✅ **cert-manager v1.19.0**: Certificados TLS auto-renováveis
 - ✅ **Sistema de Backup**: PostgreSQL + MariaDB + PVCs com persistência real
 - ✅ **Namespaces Organizados**: postgres, mariadb, redis, n8n, grafana, prometheus, glpi, zabbix, cert-manager
@@ -127,7 +127,7 @@
 
 Este projeto implementa uma **arquitetura dual-database** otimizada para diferentes necessidades:
 
-### **📊 PostgreSQL 16** (Aplicações Avançadas)
+### **📊 PostgreSQL 16.13** (Aplicações Avançadas)
 
 - **N8N**: Workflows complexos, JSON fields, extensões
 - **Grafana**: Dashboards, alertas, configurações avançadas
@@ -135,12 +135,12 @@ Este projeto implementa uma **arquitetura dual-database** otimizada para diferen
 - **Zabbix Server**: Monitoramento, histórico, trends
 - **Recursos**: JSONB, arrays, extensões, performance otimizada
 
-### **🗄️ MariaDB 12.0.2** (Aplicações Tradicionais)
+### **🗄️ MariaDB 12.2.2** (Aplicações Tradicionais)
 
 - **GLPI**: Compatibilidade oficial MySQL/MariaDB
 - **Recursos**: Transações ACID, relações tradicionais, compatibilidade
 
-### **⚡ Redis 8.2.3** (Cache Compartilhado)
+### **⚡ Redis 8.6.2** (Cache Compartilhado)
 
 - **Database 0**: N8N cache e sessões
 - **Database 1**: Grafana cache
@@ -566,7 +566,7 @@ cp -r k8s/apps/n8n/* k8s/apps/NOVA_APP/
 - **✅ Grafana**: Dashboards e monitoring (implementado)
 - **✅ Prometheus**: Métricas e alertas (implementado)
 - **✅ GLPI**: Service Desk e ITSM (implementado)
-- **✅ Zabbix**: Monitoramento completo 7.4.5 (implementado)
+- **✅ Zabbix**: Monitoramento completo 7.4.8 (implementado)
 - **✅ Redis**: Cache e sessões (implementado)
 - **✅ PostgreSQL**: Base de dados para apps (implementado)
 - **✅ MariaDB**: Base de dados para GLPI e Zabbix Proxy (implementado)
@@ -795,9 +795,9 @@ kubectl get pods -n redis              # Status do Redis
 | **start-all.sh**          | Deploy completo: infra + todas apps                       | ~5min |
 | **10.start-infra.sh**     | k3d cluster + PostgreSQL + MariaDB + Redis + cert-manager | ~2min |
 | **3.start-n8n.sh**        | n8n 1.118.2 + TLS + Redis cache + hosts                   | ~1min |
-| **3.start-grafana.sh**    | Grafana 12.2.1 + TLS + PostgreSQL + hosts                 | ~1min |
-| **3.start-prometheus.sh** | Prometheus v3.7.3 + TLS + métricas + hosts                | ~1min |
-| **3.start-glpi.sh**       | GLPI 11.0.1 + MariaDB + Redis + hosts                     | ~1min |
+| **3.start-grafana.sh**    | Grafana 12.4.2 + TLS + PostgreSQL + hosts                 | ~1min |
+| **3.start-prometheus.sh** | Prometheus v3.10.0 + TLS + métricas + hosts               | ~1min |
+| **3.start-glpi.sh**       | GLPI 11.0.6 + MariaDB + Redis + hosts                     | ~1min |
 | **18.destroy-all.sh**     | Destruição completa: drop DB → destroy → clean filesystem | ~2min |
 | **2.destroy-infra.sh**    | Remove cluster completo (dados preservados em hostPath)   | ~30s  |
 

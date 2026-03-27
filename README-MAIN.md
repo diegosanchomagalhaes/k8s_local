@@ -4,10 +4,10 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![k3d](https://img.shields.io/badge/k3d-v5.8.3-blue)](https://k3d.io/)
-[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-blue)](https://www.postgresql.org/)
-[![Redis](https://img.shields.io/badge/Redis-8.2.3-red)](https://redis.io/)
-[![n8n](https://img.shields.io/badge/n8n-1.119.1-orange)](https://n8n.io/)
-[![Grafana](https://img.shields.io/badge/Grafana-12.2.1-orange)](https://grafana.com/)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16.13-blue)](https://www.postgresql.org/)
+[![Redis](https://img.shields.io/badge/Redis-8.6.2-red)](https://redis.io/)
+[![n8n](https://img.shields.io/badge/n8n-2.13.4-orange)](https://n8n.io/)
+[![Grafana](https://img.shields.io/badge/Grafana-12.4.2-orange)](https://grafana.com/)
 [![Backup System](https://img.shields.io/badge/Backup-Automated-green)](./backup/README.md)
 
 ## 📋 Sumário
@@ -74,13 +74,13 @@ nano k8s/apps/zabbix/zabbix-secret-db.yaml         # Zabbix (PG + Redis DB4)
 
 ### **🌐 Acesso Rápido**
 
-| Aplicação             | URL de Acesso                                  | Credenciais Padrão                                | Status   |
-| --------------------- | ---------------------------------------------- | ------------------------------------------------- | -------- |
-| **n8n 1.119.1**       | https://n8n.local.127.0.0.1.nip.io:8443        | 👤 Criar conta no 1º acesso                       | ✅       |
-| **Grafana 12.2.1**    | https://grafana.local.127.0.0.1.nip.io:8443    | 👤 `admin` / 🔑 `admin` ⚠️ Troque no 1º login     | ✅       |
-| **Prometheus v3.7.3** | https://prometheus.local.127.0.0.1.nip.io:8443 | 🔓 Sem autenticação (acesso direto)               | ✅       |
-| **GLPI 11.0.1**       | https://glpi.local.127.0.0.1.nip.io:8443       | 👤 `glpi` / 🔑 `glpi` (Super Admin)               | ✅       |
-| **Zabbix 7.4.5**      | https://zabbix.local.127.0.0.1.nip.io:8443     | 👤 `Admin` / 🔑 `zabbix` ⚠️ ALTERE IMEDIATAMENTE! | 📦 Ready |
+| Aplicação              | URL de Acesso                                  | Credenciais Padrão                                | Status   |
+| ---------------------- | ---------------------------------------------- | ------------------------------------------------- | -------- |
+| **n8n 2.13.4**         | https://n8n.local.127.0.0.1.nip.io:8443        | 👤 Criar conta no 1º acesso                       | ✅       |
+| **Grafana 12.4.2**     | https://grafana.local.127.0.0.1.nip.io:8443    | 👤 `admin` / 🔑 `admin` ⚠️ Troque no 1º login     | ✅       |
+| **Prometheus v3.10.0** | https://prometheus.local.127.0.0.1.nip.io:8443 | 🔓 Sem autenticação (acesso direto)               | ✅       |
+| **GLPI 11.0.6**        | https://glpi.local.127.0.0.1.nip.io:8443       | 👤 `glpi` / 🔑 `glpi` (Super Admin)               | ✅       |
+| **Zabbix 7.4.8**       | https://zabbix.local.127.0.0.1.nip.io:8443     | 👤 `Admin` / 🔑 `zabbix` ⚠️ ALTERE IMEDIATAMENTE! | 📦 Ready |
 
 #### 🔐 **Credenciais GLPI Adicionais**
 
@@ -92,11 +92,11 @@ nano k8s/apps/zabbix/zabbix-secret-db.yaml         # Zabbix (PG + Redis DB4)
 
 #### 🗄️ **Databases (Acesso Interno)**
 
-| Serviço            | Endpoint                             | Credenciais                       | Databases                                                  |
-| ------------------ | ------------------------------------ | --------------------------------- | ---------------------------------------------------------- |
-| **PostgreSQL 16**  | `localhost:30432`                    | `postgres` / `postgres_admin`     | n8n, grafana, prometheus, zabbix                           |
-| **MariaDB 12.0.2** | `localhost:30306`                    | `root` / `mariadb_root`           | glpi                                                       |
-| **Redis 8.2.3**    | `redis.redis.svc.cluster.local:6379` | `Redis_Shared_Cache_K8s_2024_...` | DB0=n8n, DB1=grafana, DB2=glpi, DB3=prometheus, DB4=zabbix |
+| Serviço              | Endpoint                             | Credenciais                       | Databases                                                  |
+| -------------------- | ------------------------------------ | --------------------------------- | ---------------------------------------------------------- |
+| **PostgreSQL 16.13** | `localhost:30432`                    | `postgres` / `postgres_admin`     | n8n, grafana, prometheus, zabbix                           |
+| **MariaDB 12.2.2**   | `localhost:30306`                    | `root` / `mariadb_root`           | glpi                                                       |
+| **Redis 8.6.2**      | `redis.redis.svc.cluster.local:6379` | `Redis_Shared_Cache_K8s_2024_...` | DB0=n8n, DB1=grafana, DB2=glpi, DB3=prometheus, DB4=zabbix |
 
 ---
 
@@ -199,10 +199,10 @@ k8s_local/
 | Componente       | Versão   | Função                   | Acesso            |
 | ---------------- | -------- | ------------------------ | ----------------- |
 | **k3d**          | 5.8.3    | Cluster Kubernetes local | `kubectl`         |
-| **PostgreSQL**   | 16       | Database persistente     | `localhost:30432` |
-| **Redis**        | 8.2.3    | Cache e sessões          | Interno (cluster) |
-| **n8n**          | 1.119.1  | Automação workflows      | HTTPS `:8443`     |
-| **Grafana**      | 12.2.1   | Dashboards e monitoring  | HTTPS `:8443`     |
+| **PostgreSQL**   | 16.13    | Database persistente     | `localhost:30432` |
+| **Redis**        | 8.6.2    | Cache e sessões          | Interno (cluster) |
+| **n8n**          | 2.13.4   | Automação workflows      | HTTPS `:8443`     |
+| **Grafana**      | 12.4.2   | Dashboards e monitoring  | HTTPS `:8443`     |
 | **Traefik**      | Built-in | Ingress Controller       | HTTP/HTTPS        |
 | **cert-manager** | 1.18.2   | Certificados TLS         | Automático        |
 

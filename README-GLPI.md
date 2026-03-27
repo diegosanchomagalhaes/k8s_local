@@ -4,9 +4,9 @@
 
 Este diretório contém a configuração completa do GLPI (Gestionnaire libre de parc informatique) executando no Kubernetes com:
 
-- **Versão**: 11.0.1
-- **Base de Dados**: MariaDB 12.0.2 (suporte oficial GLPI)
-- **Cache**: Redis 8.2.3 (database 2, compartilhado)
+- **Versão**: 11.0.6
+- **Base de Dados**: MariaDB 12.2.2 (suporte oficial GLPI)
+- **Cache**: Redis 8.6.2 (database 2, compartilhado)
 - **Persistência**: hostPath (dados preservados)
 - **SSL/TLS**: Certificados automáticos via cert-manager
 - **Monitoramento**: Probes de health check
@@ -18,14 +18,14 @@ Este diretório contém a configuração completa do GLPI (Gestionnaire libre de
 
 ```
 ┌─────────────────┐    ┌──────────────┐    ┌─────────────────────┐
-│   Ingress       │────│    GLPI      │────│    MariaDB 12.0.2   │
+│   Ingress       │────│    GLPI      │────│    MariaDB 12.2.2   │
 │  (HTTPS/TLS)    │    │   Service    │    │   (fsGroup: 999)    │
 │ glpi.brioit.    │    │ (fsGroup:    │    │   Database: glpi    │
 │   local:8443    │    │   1000)      │    │   Port: 30306       │
 └─────────────────┘    └──────────────┘    └─────────────────────┘
                               │
                        ┌──────────────────┐
-                       │  Redis 8.2.3     │
+                       │  Redis 8.6.2     │
                        │  Database: 2      │
                        │  (Cache/Sessions) │
                        └──────────────────┘
@@ -205,7 +205,7 @@ https://glpi.local.127.0.0.1.nip.io:8443
 
 ### Banco de Dados
 
-**MariaDB 12.0.2:**
+**MariaDB 12.2.2:**
 
 - **Database**: `glpi`
 - **Host**: `mariadb.mariadb.svc.cluster.local`

@@ -1,15 +1,15 @@
 # Grafana - Monitoramento e Observabilidade
 
-> 🔍 **Dashboards e Métricas**: Grafana v12.2.1 com PostgreSQL, TLS automático e auto-scaling para monitoramento completo da infraestrutura.
+> 🔍 **Dashboards e Métricas**: Grafana v12.4.2 com PostgreSQL, TLS automático e auto-scaling para monitoramento completo da infraestrutura.
 
-[![Grafana](https://img.shields.io/badge/Grafana-12.2.1-orange)](https://grafana.com/)
-[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-blue)](https://www.postgresql.org/)
+[![Grafana](https://img.shields.io/badge/Grafana-12.4.2-orange)](https://grafana.com/)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16.13-blue)](https://www.postgresql.org/)
 [![Kubernetes](https://img.shields.io/badge/Kubernetes-v1.34.1-blue)](https://kubernetes.io/)
 [![cert-manager](https://img.shields.io/badge/cert--manager-v1.19.0-green)](https://cert-manager.io/)
 
 ## 🎯 **Status Atual - Grafana Completo**
 
-- ✅ **Grafana 12.2.1**: Interface web para monitoramento
+- ✅ **Grafana 12.4.2**: Interface web para monitoramento
 - ✅ **PostgreSQL Integration**: Database dedicado 'grafana'
 - ✅ **HTTPS/TLS**: Certificados automáticos via cert-manager
 - ✅ **Auto-scaling**: HPA configurado (1-3 replicas)
@@ -29,14 +29,14 @@
 
 ### 🔐 **Credenciais de Acesso Padrão**
 
-| Item            | Valor                                                      | Observação                                                  |
-| --------------- | ---------------------------------------------------------- | ----------------------------------------------------------- |
-| 🌐 **URL**      | `https://grafana.local.127.0.0.1.nip.io:8443`              | Usar sempre HTTPS na porta 8443                             |
-| 👤 **Usuário**  | `admin`                                                    | Usuário administrador padrão                                |
-| 🔑 **Senha**    | `admin`                                                    | **⚠️ ATENÇÃO**: Grafana solicitará troca no primeiro login! |
-| 💾 **Database** | PostgreSQL 16 (`postgres.postgres.svc.cluster.local:5432`) | Database: `grafana`                                         |
-| 🗄️ **Cache**    | Redis 8.2.3 (`redis.redis.svc.cluster.local:6379`)         | Database: DB1 (cache)                                       |
-| 🗄️ **Sessions** | Redis 8.2.3 (`redis.redis.svc.cluster.local:6379`)         | Database: DB1 (sessões)                                     |
+| Item            | Valor                                                         | Observação                                                  |
+| --------------- | ------------------------------------------------------------- | ----------------------------------------------------------- |
+| 🌐 **URL**      | `https://grafana.local.127.0.0.1.nip.io:8443`                 | Usar sempre HTTPS na porta 8443                             |
+| 👤 **Usuário**  | `admin`                                                       | Usuário administrador padrão                                |
+| 🔑 **Senha**    | `admin`                                                       | **⚠️ ATENÇÃO**: Grafana solicitará troca no primeiro login! |
+| 💾 **Database** | PostgreSQL 16.13 (`postgres.postgres.svc.cluster.local:5432`) | Database: `grafana`                                         |
+| 🗄️ **Cache**    | Redis 8.6.2 (`redis.redis.svc.cluster.local:6379`)            | Database: DB1 (cache)                                       |
+| 🗄️ **Sessions** | Redis 8.6.2 (`redis.redis.svc.cluster.local:6379`)            | Database: DB1 (sessões)                                     |
 
 > 🔒 **RECOMENDAÇÕES DE SEGURANÇA**:
 >
@@ -124,7 +124,7 @@ Grafana Stack
 │                     k3d Cluster                        │
 ├─────────────────────────────────────────────────────────┤
 │  Namespace: grafana                                     │
-│  ├── 🔍 Grafana (12.2.1)                                │
+│  ├── 🔍 Grafana (12.4.2)                                │
 │  ├── 💾 PVCs: grafana-pvc (10Gi) + grafana-data (5Gi) │
 │  └── 🔐 Secrets: DB credentials + admin auth           │
 ├─────────────────────────────────────────────────────────┤

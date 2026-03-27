@@ -25,9 +25,9 @@ k3d cluster create --volume "/home/dsm/cluster:/home/dsm/cluster@all"
 ├── postgresql/
 │   └── data/                     # PostgreSQL 16 - Bancos: n8n, grafana, prometheus
 ├── mariadb/
-│   └── data/                     # MariaDB 12.0.2 - Banco: glpi
+│   └── data/                     # MariaDB 12.2.2 - Banco: glpi
 ├── redis/
-│   └── appendonlydir/            # Redis 8.2.3 AOF - Cache (DB0-DB3)
+│   └── appendonlydir/            # Redis 8.6.2 AOF - Cache (DB0-DB3)
 ├── applications/
 │   ├── n8n/
 │   │   ├── data/                 # n8n workflows

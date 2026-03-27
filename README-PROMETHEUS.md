@@ -20,10 +20,10 @@
 
 ### Características do Deploy
 
-- **Versão**: Prometheus v3.7.3
+- **Versão**: Prometheus v3.10.0
 - **Namespace**: `prometheus`
 - **Banco de dados**: PostgreSQL (infraestrutura compartilhada)
-- **Cache**: Redis 8.2.3 (database 3, para métricas)
+- **Cache**: Redis 8.6.2 (database 3, para métricas)
 - **Persistência**: hostPath em `/home/dsm/cluster/applications/prometheus/` (TRUE PaaS)
 - **Acesso**: HTTPS via Ingress (porta 8443)
 - **Scaling**: HPA (Horizontal Pod Autoscaler)
@@ -38,8 +38,8 @@
 | 🌐 **URL**          | `https://prometheus.local.127.0.0.1.nip.io:8443`           | Usar sempre HTTPS na porta 8443    |
 | 👤 **Autenticação** | **🔓 SEM AUTENTICAÇÃO**                                    | Prometheus não possui login padrão |
 | 🔑 **Senha**        | Não requerida                                              | Acesso direto pela URL             |
-| 💾 **Database**     | PostgreSQL 16 (`postgres.postgres.svc.cluster.local:5432`) | Database: `prometheus`             |
-| 🗄️ **Cache**        | Redis 8.2.3 (`redis.redis.svc.cluster.local:6379`)         | Database: DB3                      |
+| 💾 **Database**     | PostgreSQL 16.13 (`postgres.postgres.svc.cluster.local:5432`) | Database: `prometheus`             |
+| 🗄️ **Cache**        | Redis 8.6.2 (`redis.redis.svc.cluster.local:6379`)         | Database: DB3                      |
 | 📊 **TSDB**         | `/prometheus` (volume persistente)                         | Time Series Database para métricas |
 
 > ⚠️ **IMPORTANTE**:
@@ -62,7 +62,7 @@ k8s/apps/prometheus/
 ├── prometheus-namespace.yaml          # Namespace dedicado
 ├── prometheus-secret-db.yaml          # Credenciais completas (DB + Redis)
 ├── prometheus-secret-db.yaml.template # Template seguro
-├── prometheus-deployment.yaml         # Deployment Prometheus v3.7.3
+├── prometheus-deployment.yaml         # Deployment Prometheus v3.10.0
 ├── prometheus-service.yaml           # Service ClusterIP
 ├── prometheus-hpa.yaml               # Auto-scaling (CPU + Memória)
 ├── prometheus-certificate.yaml       # Certificado TLS automático
@@ -84,7 +84,7 @@ k8s/apps/prometheus/
 
 ```
 ┌─────────────────┐    ┌──────────────┐    ┌─────────────────────┐
-│   Ingress       │────│  Prometheus  │────│  PostgreSQL 16      │
+│   Ingress       │────│  Prometheus  │────│  PostgreSQL 16.13      │
 │  (HTTPS/TLS)    │    │   Service    │    │   (fsGroup: 999)    │
 │ prometheus.     │    │ (Port: 9090) │    │ Database: prometheus│
 │   local:8443    │    │ (fsGroup:    │    │   Port: 30432       │
@@ -92,7 +92,7 @@ k8s/apps/prometheus/
                        └──────────────┘
                               │
                        ┌──────────────────┐
-                       │  Redis 8.2.3     │
+                       │  Redis 8.6.2     │
                        │  Database: 3      │
                        │  (Cache/Métricas) │
                        └──────────────────┘
@@ -436,4 +436,4 @@ data:
 
 ---
 
-> 📊 **Prometheus v3.7.3** executando no cluster k3d local com integração completa Kubernetes e PostgreSQL para metadados.
+> 📊 **Prometheus v3.10.0** executando no cluster k3d local com integração completa Kubernetes e PostgreSQL para metadados.

@@ -40,7 +40,7 @@ A infraestrutura base é composta por:
 
 ### 🐘 PostgreSQL
 
-- **Versão**: PostgreSQL 16
+- **Versão**: PostgreSQL 16.13
 - **Namespace**: `postgres`
 - **Service**: `postgres.postgres.svc.cluster.local:5432`
 - **Tipo**: StatefulSet com PersistentVolumeClaim
@@ -51,7 +51,7 @@ A infraestrutura base é composta por:
 
 ### 🔴 Redis
 
-- **Versão**: Redis 8.2.3
+- **Versão**: Redis 8.6.2
 - **Namespace**: `redis`
 - **Service**: `redis.redis.svc.cluster.local:6379`
 - **Tipo**: Deployment com PersistentVolumeClaim
