@@ -3,7 +3,7 @@
 # Backup Completo - PostgreSQL + PVCs
 # Script principal para fazer backup completo da infraestrutura
 
-set -e
+set -euo pipefail
 
 # Configurações
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"

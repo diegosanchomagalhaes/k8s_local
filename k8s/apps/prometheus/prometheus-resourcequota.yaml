@@ -1,0 +1,17 @@
+---
+# ResourceQuota para namespace prometheus
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: prometheus-quota
+  namespace: prometheus
+  labels:
+    app.kubernetes.io/part-of: brioit-local
+spec:
+  hard:
+    requests.cpu: "300m"
+    requests.memory: "600Mi"
+    limits.cpu: "2"
+    limits.memory: "2Gi"
+    pods: "5"
+    persistentvolumeclaims: "3"

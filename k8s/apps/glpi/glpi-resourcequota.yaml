@@ -1,0 +1,25 @@
+---
+# ResourceQuota para o namespace glpi
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: glpi-resource-quota
+  namespace: glpi
+  labels:
+    app.kubernetes.io/name: glpi
+    app.kubernetes.io/component: helpdesk
+    app.kubernetes.io/part-of: brioit-local
+spec:
+  hard:
+    # CPU
+    requests.cpu: "250m"
+    limits.cpu: "1"
+    # Memória
+    requests.memory: "256Mi"
+    limits.memory: "1Gi"
+    # Pods
+    pods: "5"
+    # PersistentVolumeClaims
+    persistentvolumeclaims: "3"
+    # Services
+    services: "5"

@@ -1,5 +1,5 @@
 #!/bin/bash
-set -e
+set -euo pipefail
 
 # Script para remoção da aplicação Zabbix
 # MANTÉM: Base de dados PostgreSQL/MariaDB, Redis e dados PVC em hostPath

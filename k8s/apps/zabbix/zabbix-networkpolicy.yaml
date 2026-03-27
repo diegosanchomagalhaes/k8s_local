@@ -1,0 +1,85 @@
+---
+# NetworkPolicy para Zabbix
+# Permite: ingress do Traefik (kube-system) e saída para postgres, mariadb, redis e SNMP
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: zabbix-network-policy
+  namespace: zabbix
+  labels:
+    app.kubernetes.io/name: zabbix
+    app.kubernetes.io/component: monitoring
+    app.kubernetes.io/part-of: brioit-local
+spec:
+  podSelector: {}
+  policyTypes:
+    - Ingress
+    - Egress
+
+  ingress:
+    # Traefik (ingress controller) no kube-system
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: kube-system
+      ports:
+        - port: 8080
+          protocol: TCP
+        - port: 10050
+          protocol: TCP
+        - port: 10051
+          protocol: TCP
+    # Comunicação interna entre pods do próprio namespace
+    - from:
+        - podSelector: {}
+
+  egress:
+    # PostgreSQL (banco do Zabbix Server)
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: postgres
+      ports:
+        - port: 5432
+          protocol: TCP
+    # MariaDB (opcional, alguns setups usam MySQL)
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: mariadb
+      ports:
+        - port: 3306
+          protocol: TCP
+    # Redis (cache do Zabbix Server)
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: redis
+      ports:
+        - port: 6379
+          protocol: TCP
+    # Comunicação interna entre pods (zabbix-server -> zabbix-agent)
+    - to:
+        - podSelector: {}
+    # DNS
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: kube-system
+      ports:
+        - port: 53
+          protocol: UDP
+        - port: 53
+          protocol: TCP
+    # SNMP traps externos (porta 162/UDP)
+    - to: []
+      ports:
+        - port: 162
+          protocol: UDP
+    # HTTPS externo (webhooks, integrações)
+    - to: []
+      ports:
+        - port: 443
+          protocol: TCP
+        - port: 80
+          protocol: TCP

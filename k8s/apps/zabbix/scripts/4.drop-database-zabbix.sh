@@ -1,5 +1,5 @@
 #!/bin/bash
-set -e
+set -euo pipefail
 
 # Script para limpeza completa das bases de dados do Zabbix
 # ATENÇÃO: Este script remove PERMANENTEMENTE todos os dados do Zabbix!

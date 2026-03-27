@@ -1,0 +1,76 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: grafana-backup
+  namespace: grafana
+  labels:
+    app.kubernetes.io/name: grafana
+    app.kubernetes.io/component: backup
+    app.kubernetes.io/part-of: brioit-local
+spec:
+  schedule: "0 3 * * *"
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          serviceAccountName: backup-service-account
+          containers:
+            - name: backup
+              image: postgres:16.13
+              command:
+                - /bin/bash
+                - -c
+                - |
+                  set -euo pipefail
+                  echo "Iniciando backup do Grafana..."
+
+                  TIMESTAMP=$(date +"%Y%m%d_%H%M%S")
+                  BACKUP_DIR="/backup/grafana/$TIMESTAMP"
+                  mkdir -p "$BACKUP_DIR"
+
+                  DB_PASSWORD=$(cat /etc/secrets/postgres-password)
+                  export PGPASSWORD="$DB_PASSWORD"
+
+                  pg_dump -h postgres.postgres.svc.cluster.local -p 5432 -U postgres -d grafana \
+                    --verbose --clean --no-owner --no-privileges \
+                    > "$BACKUP_DIR/grafana_database_$TIMESTAMP.sql"
+
+                  gzip "$BACKUP_DIR/grafana_database_$TIMESTAMP.sql"
+
+                  cat > "$BACKUP_DIR/backup_info.json" <<EOF
+                  {
+                    "app_name": "grafana",
+                    "backup_type": "db",
+                    "timestamp": "$TIMESTAMP",
+                    "date": "$(date -Iseconds)"
+                  }
+                  EOF
+
+                  echo "Limpando backups antigos (mantendo últimos 7)..."
+                  cd /backup/grafana
+                  ls -t | tail -n +8 | xargs -r rm -rf
+
+                  echo "Backup do Grafana concluído: $TIMESTAMP"
+              env:
+                - name: TZ
+                  value: "America/Sao_Paulo"
+              volumeMounts:
+                - name: backup-storage
+                  mountPath: /backup
+                - name: postgres-secret
+                  mountPath: /etc/secrets
+                  readOnly: true
+          volumes:
+            - name: backup-storage
+              hostPath:
+                path: /mnt/cluster/backup
+                type: DirectoryOrCreate
+            - name: postgres-secret
+              secret:
+                secretName: postgres-admin-secret
+                items:
+                  - key: POSTGRES_PASSWORD
+                    path: postgres-password
+          restartPolicy: OnFailure

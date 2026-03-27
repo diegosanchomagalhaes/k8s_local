@@ -3,7 +3,7 @@
 # Backup PostgreSQL Databases
 # Cria backup das bases de dados PostgreSQL usando kubectl
 
-set -e
+set -euo pipefail
 
 # Configurações
 NAMESPACE="postgres"

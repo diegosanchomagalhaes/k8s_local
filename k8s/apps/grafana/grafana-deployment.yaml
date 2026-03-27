@@ -110,6 +110,9 @@ spec:
               mountPath: /var/lib/grafana
             - name: grafana-data
               mountPath: /var/log/grafana
+            - name: grafana-datasources
+              mountPath: /etc/grafana/provisioning/datasources
+              readOnly: true
 
           # Probes
           livenessProbe:
@@ -146,6 +149,9 @@ spec:
         - name: grafana-data
           persistentVolumeClaim:
             claimName: grafana-data-pvc
+        - name: grafana-datasources
+          configMap:
+            name: grafana-datasources
 
       # Restart policy
       restartPolicy: Always

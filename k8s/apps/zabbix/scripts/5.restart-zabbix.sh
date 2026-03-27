@@ -1,5 +1,5 @@
 #!/bin/bash
-set -e
+set -euo pipefail
 
 # Script para restart/recriar o Zabbix mantendo dados
 

@@ -1,0 +1,32 @@
+---
+# Secret com credenciais BasicAuth para o Prometheus
+# Gerar com: htpasswd -nb admin <SENHA> | base64 -w 0
+# Valor padrão (admin:prometheus-admin) — ALTERE antes de usar em produção
+apiVersion: v1
+kind: Secret
+metadata:
+  name: prometheus-basic-auth
+  namespace: prometheus
+  labels:
+    app.kubernetes.io/name: prometheus
+    app.kubernetes.io/component: monitoring
+    app.kubernetes.io/part-of: brioit-local
+type: Opaque
+data:
+  # admin:prometheus-admin  (htpasswd -nb admin prometheus-admin | base64)
+  users: YWRtaW46JGFwcjEkT3pXYndFVm8kWjJuMU9EaGtnVDZsdFB6UUluLy4vMAo=
+---
+# Middleware Traefik para BasicAuth
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: prometheus-auth
+  namespace: prometheus
+  labels:
+    app.kubernetes.io/name: prometheus
+    app.kubernetes.io/component: monitoring
+    app.kubernetes.io/part-of: brioit-local
+spec:
+  basicAuth:
+    secret: prometheus-basic-auth
+    removeHeader: true

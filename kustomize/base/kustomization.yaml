@@ -1,0 +1,25 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+# Base - recursos comuns a todos os ambientes
+# Não use diretamente — use os overlays (local/ ou cloud/)
+
+resources:
+  # Infraestrutura
+  - infra/postgres/
+  - infra/mariadb/
+  - infra/redis/
+  - infra/cert-manager/
+  - infra/storage/
+  # Aplicações
+  - k8s/apps/n8n/
+  - k8s/apps/grafana/
+  - k8s/apps/prometheus/
+  - k8s/apps/zabbix/
+  - k8s/apps/glpi/
+
+labels:
+  - pairs:
+      app.kubernetes.io/part-of: brioit-local
+    includeSelectors: false
+    includeTemplates: true

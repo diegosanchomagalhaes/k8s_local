@@ -1,0 +1,49 @@
+# NetworkPolicy para o namespace postgres
+# Permite apenas: acesso à porta 5432 de todos os namespaces da aplicação + DNS
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: postgres-network-policy
+  namespace: postgres
+  labels:
+    app.kubernetes.io/name: postgres
+    app.kubernetes.io/component: database
+    app.kubernetes.io/part-of: brioit-local
+spec:
+  podSelector:
+    matchLabels:
+      app: postgres
+  policyTypes:
+    - Ingress
+    - Egress
+  ingress:
+    # Permite acesso ao PostgreSQL das aplicações (n8n, grafana, prometheus, zabbix, glpi)
+    - from:
+        - namespaceSelector:
+            matchExpressions:
+              - key: kubernetes.io/metadata.name
+                operator: In
+                values: [n8n, grafana, prometheus, zabbix, glpi]
+      ports:
+        - port: 5432
+          protocol: TCP
+    # Permite acesso para backups
+    - from:
+        - namespaceSelector:
+            matchExpressions:
+              - key: kubernetes.io/metadata.name
+                operator: In
+                values: [n8n, grafana, prometheus, zabbix, glpi]
+        - podSelector:
+            matchLabels:
+              app: backup
+      ports:
+        - port: 5432
+          protocol: TCP
+  egress:
+    # DNS
+    - ports:
+        - port: 53
+          protocol: UDP
+        - port: 53
+          protocol: TCP

@@ -1,0 +1,62 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+# Overlay LOCAL - k3d na máquina local (WSL2 / Linux)
+# Uso: kubectl apply -k kustomize/overlays/local/
+
+bases:
+  - ../../base
+
+# Patches específicos para ambiente local
+patches:
+  # PostgreSQL - volume local
+  - patch: |-
+      apiVersion: v1
+      kind: PersistentVolume
+      metadata:
+        name: postgres-pv
+      spec:
+        hostPath:
+          path: /home/dsm/cluster/postgresql/data
+    target:
+      kind: PersistentVolume
+      name: postgres-pv
+
+  # MariaDB - volume local
+  - patch: |-
+      apiVersion: v1
+      kind: PersistentVolume
+      metadata:
+        name: mariadb-pv
+      spec:
+        hostPath:
+          path: /home/dsm/cluster/mariadb/data
+    target:
+      kind: PersistentVolume
+      name: mariadb-pv
+
+  # Redis - volume local
+  - patch: |-
+      apiVersion: v1
+      kind: PersistentVolume
+      metadata:
+        name: redis-pv
+      spec:
+        hostPath:
+          path: /home/dsm/cluster/redis/data
+    target:
+      kind: PersistentVolume
+      name: redis-pv
+
+# Labels específicos do ambiente
+commonLabels:
+  environment: local
+
+# ConfigMap generator para configurações locais
+configMapGenerator:
+  - name: cluster-config
+    literals:
+      - ENVIRONMENT=local
+      - CLUSTER_NAME=k3d-cluster
+      - INGRESS_CLASS=traefik
+      - BASE_DOMAIN=local.127.0.0.1.nip.io

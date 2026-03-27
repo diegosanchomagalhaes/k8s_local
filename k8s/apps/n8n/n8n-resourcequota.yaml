@@ -1,0 +1,17 @@
+---
+# ResourceQuota para namespace n8n
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: n8n-quota
+  namespace: n8n
+  labels:
+    app.kubernetes.io/part-of: brioit-local
+spec:
+  hard:
+    requests.cpu: "500m"
+    requests.memory: "512Mi"
+    limits.cpu: "2"
+    limits.memory: "2Gi"
+    pods: "10"
+    persistentvolumeclaims: "3"

@@ -1,0 +1,76 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: glpi-backup
+  namespace: glpi
+  labels:
+    app.kubernetes.io/name: glpi
+    app.kubernetes.io/component: backup
+    app.kubernetes.io/part-of: brioit-local
+spec:
+  schedule: "0 1 * * *"
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          serviceAccountName: backup-service-account
+          containers:
+            - name: backup
+              image: mariadb:12.2.2
+              command:
+                - /bin/bash
+                - -c
+                - |
+                  set -euo pipefail
+                  echo "Iniciando backup do GLPI..."
+
+                  TIMESTAMP=$(date +"%Y%m%d_%H%M%S")
+                  BACKUP_DIR="/backup/glpi/$TIMESTAMP"
+                  mkdir -p "$BACKUP_DIR"
+
+                  DB_PASSWORD=$(cat /etc/secrets/mariadb-root-password)
+
+                  mysqldump -h mariadb.mariadb.svc.cluster.local -P 3306 \
+                    -u root -p"$DB_PASSWORD" \
+                    --single-transaction --routines --triggers \
+                    glpi > "$BACKUP_DIR/glpi_database_$TIMESTAMP.sql"
+
+                  gzip "$BACKUP_DIR/glpi_database_$TIMESTAMP.sql"
+
+                  cat > "$BACKUP_DIR/backup_info.json" <<EOF
+                  {
+                    "app_name": "glpi",
+                    "backup_type": "db",
+                    "timestamp": "$TIMESTAMP",
+                    "date": "$(date -Iseconds)"
+                  }
+                  EOF
+
+                  echo "Limpando backups antigos (mantendo últimos 7)..."
+                  cd /backup/glpi
+                  ls -t | tail -n +8 | xargs -r rm -rf
+
+                  echo "Backup do GLPI concluído: $TIMESTAMP"
+              env:
+                - name: TZ
+                  value: "America/Sao_Paulo"
+              volumeMounts:
+                - name: backup-storage
+                  mountPath: /backup
+                - name: mariadb-secret
+                  mountPath: /etc/secrets
+                  readOnly: true
+          volumes:
+            - name: backup-storage
+              hostPath:
+                path: /mnt/cluster/backup
+                type: DirectoryOrCreate
+            - name: mariadb-secret
+              secret:
+                secretName: mariadb-admin-secret
+                items:
+                  - key: MYSQL_ROOT_PASSWORD
+                    path: mariadb-root-password
+          restartPolicy: OnFailure

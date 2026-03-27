@@ -1,5 +1,5 @@
 #!/bin/bash
-set -e
+set -euo pipefail
 
 # =================================================================
 # SCRIPT DE RESTORE PARA APLICAÇÕES KUBERNETES

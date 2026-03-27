@@ -1,5 +1,5 @@
 #!/bin/bash
-set -e
+set -euo pipefail
 
 echo "======== Removendo Volumes Persistentes do n8n ========"
 echo ""

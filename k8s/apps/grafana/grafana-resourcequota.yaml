@@ -1,0 +1,17 @@
+---
+# ResourceQuota para namespace grafana
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: grafana-quota
+  namespace: grafana
+  labels:
+    app.kubernetes.io/part-of: brioit-local
+spec:
+  hard:
+    requests.cpu: "200m"
+    requests.memory: "512Mi"
+    limits.cpu: "1"
+    limits.memory: "1Gi"
+    pods: "5"
+    persistentvolumeclaims: "3"

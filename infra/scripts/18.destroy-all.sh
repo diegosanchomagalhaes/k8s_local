@@ -12,7 +12,7 @@
 #       então não é necessário deletá-los manualmente.
 ###############################################################################
 
-set -e
+set -euo pipefail
 
 # Cores para output
 RED='\033[0;31m'

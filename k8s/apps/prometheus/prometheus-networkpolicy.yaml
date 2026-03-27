@@ -1,0 +1,78 @@
+# NetworkPolicy para o namespace prometheus
+# Permite: ingress via Traefik; scraping de todos os namespaces; acesso a Redis; DNS
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: prometheus-network-policy
+  namespace: prometheus
+  labels:
+    app.kubernetes.io/name: prometheus
+    app.kubernetes.io/component: monitoring
+    app.kubernetes.io/part-of: brioit-local
+spec:
+  podSelector:
+    matchLabels:
+      app: prometheus
+  policyTypes:
+    - Ingress
+    - Egress
+  ingress:
+    # Permite tráfego do Traefik (kube-system) — com BasicAuth
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: kube-system
+      ports:
+        - port: 9090
+          protocol: TCP
+    # Permite acesso do Grafana
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: grafana
+      ports:
+        - port: 9090
+          protocol: TCP
+  egress:
+    # DNS
+    - ports:
+        - port: 53
+          protocol: UDP
+        - port: 53
+          protocol: TCP
+    # PostgreSQL
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: postgres
+      ports:
+        - port: 5432
+          protocol: TCP
+    # Redis
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: redis
+      ports:
+        - port: 6379
+          protocol: TCP
+    # Kubernetes API (service discovery)
+    - ports:
+        - port: 6443
+          protocol: TCP
+        - port: 443
+          protocol: TCP
+    # Scraping de métricas de todos os namespaces (porta genérica)
+    - ports:
+        - port: 9090
+          protocol: TCP
+        - port: 9091
+          protocol: TCP
+        - port: 9100
+          protocol: TCP
+        - port: 9187
+          protocol: TCP
+        - port: 10250
+          protocol: TCP
+        - port: 10255
+          protocol: TCP

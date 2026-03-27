@@ -1,5 +1,5 @@
 #!/bin/bash
-set -e
+set -euo pipefail
 
 # Script para configurar templates de PersistentVolumes com hostPath
 # Substitui [CLUSTER_BASE_PATH] pelo path real configurado

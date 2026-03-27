@@ -3,6 +3,12 @@ kind: Ingress
 metadata:
   name: prometheus
   namespace: prometheus
+  labels:
+    app.kubernetes.io/name: prometheus
+    app.kubernetes.io/component: monitoring
+    app.kubernetes.io/part-of: brioit-local
+  annotations:
+    traefik.ingress.kubernetes.io/router.middlewares: prometheus-prometheus-auth@kubernetescrd
 spec:
   ingressClassName: traefik
   tls:

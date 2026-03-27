@@ -1,0 +1,17 @@
+---
+# ResourceQuota para namespace redis
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: redis-quota
+  namespace: redis
+  labels:
+    app.kubernetes.io/part-of: brioit-local
+spec:
+  hard:
+    requests.cpu: "200m"
+    requests.memory: "512Mi"
+    limits.cpu: "1"
+    limits.memory: "1500Mi"
+    pods: "5"
+    persistentvolumeclaims: "2"

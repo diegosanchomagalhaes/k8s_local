@@ -1,4 +1,5 @@
 #!/bin/bash
+set -euo pipefail
 
 # Script de inicialização da infraestrutura base
 # Para usar: ./start-infra.sh

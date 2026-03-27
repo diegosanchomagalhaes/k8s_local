@@ -1,0 +1,25 @@
+---
+# ResourceQuota para o namespace zabbix
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: zabbix-resource-quota
+  namespace: zabbix
+  labels:
+    app.kubernetes.io/name: zabbix
+    app.kubernetes.io/component: monitoring
+    app.kubernetes.io/part-of: brioit-local
+spec:
+  hard:
+    # CPU: o Zabbix tem vários componentes (server, web, agent, java-gateway, proxy, snmptraps)
+    requests.cpu: "1"
+    limits.cpu: "4"
+    # Memória
+    requests.memory: "1Gi"
+    limits.memory: "4Gi"
+    # Pods
+    pods: "15"
+    # PersistentVolumeClaims
+    persistentvolumeclaims: "5"
+    # Services
+    services: "10"

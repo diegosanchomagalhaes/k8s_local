@@ -1,0 +1,59 @@
+---
+# NetworkPolicy para GLPI
+# Permite: ingress do Traefik (kube-system), saída para mariadb
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: glpi-network-policy
+  namespace: glpi
+  labels:
+    app.kubernetes.io/name: glpi
+    app.kubernetes.io/component: helpdesk
+    app.kubernetes.io/part-of: brioit-local
+spec:
+  podSelector: {}
+  policyTypes:
+    - Ingress
+    - Egress
+
+  ingress:
+    # Traefik (ingress controller) no kube-system
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: kube-system
+      ports:
+        - port: 80
+          protocol: TCP
+        - port: 8080
+          protocol: TCP
+    # Comunicação interna entre pods do próprio namespace
+    - from:
+        - podSelector: {}
+
+  egress:
+    # MariaDB - banco principal do GLPI
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: mariadb
+      ports:
+        - port: 3306
+          protocol: TCP
+    # DNS
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: kube-system
+      ports:
+        - port: 53
+          protocol: UDP
+        - port: 53
+          protocol: TCP
+    # HTTPS externo (atualizações de plugins, marketplace GLPI)
+    - to: []
+      ports:
+        - port: 443
+          protocol: TCP
+        - port: 80
+          protocol: TCP

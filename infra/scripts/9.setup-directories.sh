@@ -1,5 +1,5 @@
 #!/bin/bash
-set -e
+set -euo pipefail
 
 echo "📂 Criando nova estrutura de diretórios organizada..."
 

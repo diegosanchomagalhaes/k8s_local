@@ -1,5 +1,5 @@
 #!/bin/bash
-set -e
+set -euo pipefail
 
 # Script para remoção da aplicação n8n
 # MANTÉM: Base de dados PostgreSQL, Redis e dados PVC em hostPath

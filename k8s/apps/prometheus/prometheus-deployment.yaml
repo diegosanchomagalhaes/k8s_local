@@ -3,6 +3,11 @@ kind: Deployment
 metadata:
   name: prometheus
   namespace: prometheus
+  labels:
+    app.kubernetes.io/name: prometheus
+    app.kubernetes.io/component: monitoring
+    app.kubernetes.io/part-of: brioit-local
+    app.kubernetes.io/version: "v3.10.0"
 spec:
   replicas: 1
   selector:
@@ -12,6 +17,9 @@ spec:
     metadata:
       labels:
         app: prometheus
+        app.kubernetes.io/name: prometheus
+        app.kubernetes.io/component: monitoring
+        app.kubernetes.io/part-of: brioit-local
     spec:
       securityContext:
         fsGroup: 65534 # nobody group for Prometheus
@@ -60,126 +68,14 @@ spec:
             - -c
             - |
               echo "Fixing permissions for Prometheus directories..."
-              chown -R 65534:65534 /prometheus /etc/prometheus
-              chmod -R 755 /prometheus /etc/prometheus
+              chown -R 65534:65534 /prometheus
+              chmod -R 755 /prometheus
               echo "Permissions fixed!"
           volumeMounts:
             - name: prometheus-data
               mountPath: /prometheus
-            - name: prometheus-config
-              mountPath: /etc/prometheus
           securityContext:
             runAsUser: 0
-        - name: setup-config
-          image: busybox:1.37.0
-          command:
-            - sh
-            - -c
-            - |
-              echo "Setting up Prometheus configuration..."
-              if [ ! -f /etc/prometheus/prometheus.yml ]; then
-                cat > /etc/prometheus/prometheus.yml << 'EOF'
-              global:
-                scrape_interval: 15s
-                evaluation_interval: 15s
-                external_labels:
-                  cluster: 'k3d-cluster'
-                  environment: 'local'
-
-              rule_files:
-                # - "first_rules.yml"
-                # - "second_rules.yml"
-
-              scrape_configs:
-                - job_name: 'prometheus'
-                  static_configs:
-                    - targets: ['localhost:9090']
-                
-                - job_name: 'kubernetes-apiservers'
-                  kubernetes_sd_configs:
-                    - role: endpoints
-                  scheme: https
-                  tls_config:
-                    ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
-                  bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
-                  relabel_configs:
-                    - source_labels: [__meta_kubernetes_namespace, __meta_kubernetes_service_name, __meta_kubernetes_endpoint_port_name]
-                      action: keep
-                      regex: default;kubernetes;https
-
-                - job_name: 'kubernetes-nodes'
-                  kubernetes_sd_configs:
-                    - role: node
-                  scheme: https
-                  tls_config:
-                    ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
-                  bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
-                  relabel_configs:
-                    - action: labelmap
-                      regex: __meta_kubernetes_node_label_(.+)
-
-                - job_name: 'kubernetes-pods'
-                  kubernetes_sd_configs:
-                    - role: pod
-                  relabel_configs:
-                    - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_scrape]
-                      action: keep
-                      regex: true
-                    - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_path]
-                      action: replace
-                      target_label: __metrics_path__
-                      regex: (.+)
-                    - source_labels: [__address__, __meta_kubernetes_pod_annotation_prometheus_io_port]
-                      action: replace
-                      regex: ([^:]+)(?::\d+)?;(\d+)
-                      replacement: $1:$2
-                      target_label: __address__
-                    - action: labelmap
-                      regex: __meta_kubernetes_pod_label_(.+)
-                    - source_labels: [__meta_kubernetes_namespace]
-                      action: replace
-                      target_label: kubernetes_namespace
-                    - source_labels: [__meta_kubernetes_pod_name]
-                      action: replace
-                      target_label: kubernetes_pod_name
-
-                - job_name: 'kubernetes-services'
-                  kubernetes_sd_configs:
-                    - role: endpoints
-                  relabel_configs:
-                    - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_scrape]
-                      action: keep
-                      regex: true
-                    - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_scheme]
-                      action: replace
-                      target_label: __scheme__
-                      regex: (https?)
-                    - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_path]
-                      action: replace
-                      target_label: __metrics_path__
-                      regex: (.+)
-                    - source_labels: [__address__, __meta_kubernetes_service_annotation_prometheus_io_port]
-                      action: replace
-                      target_label: __address__
-                      regex: ([^:]+)(?::\d+)?;(\d+)
-                      replacement: $1:$2
-                    - action: labelmap
-                      regex: __meta_kubernetes_service_label_(.+)
-                    - source_labels: [__meta_kubernetes_namespace]
-                      action: replace
-                      target_label: kubernetes_namespace
-                    - source_labels: [__meta_kubernetes_service_name]
-                      action: replace
-                      target_label: kubernetes_name
-              EOF
-                echo "Default configuration created!"
-              else
-                echo "Configuration already exists!"
-              fi
-              chown 65534:65534 /etc/prometheus/prometheus.yml
-          volumeMounts:
-            - name: prometheus-config
-              mountPath: /etc/prometheus
       containers:
         - name: prometheus
           image: prom/prometheus:v3.10.0
@@ -197,7 +93,6 @@ spec:
             - "--web.console.libraries=/etc/prometheus/console_libraries"
             - "--web.console.templates=/etc/prometheus/consoles"
             - "--web.enable-lifecycle"
-            - "--web.enable-admin-api"
             - "--web.external-url=https://prometheus.local.127.0.0.1.nip.io"
             - "--web.route-prefix=/"
           env:
@@ -229,6 +124,7 @@ spec:
               mountPath: /prometheus
             - name: prometheus-config
               mountPath: /etc/prometheus
+              readOnly: true
           livenessProbe:
             httpGet:
               path: /
@@ -250,5 +146,5 @@ spec:
           persistentVolumeClaim:
             claimName: prometheus-pvc
         - name: prometheus-config
-          persistentVolumeClaim:
-            claimName: prometheus-config-pvc
+          configMap:
+            name: prometheus-config

@@ -1,0 +1,14 @@
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: mariadb-pdb
+  namespace: mariadb
+  labels:
+    app.kubernetes.io/name: mariadb
+    app.kubernetes.io/component: database
+    app.kubernetes.io/part-of: brioit-local
+spec:
+  maxUnavailable: 0
+  selector:
+    matchLabels:
+      app: mariadb

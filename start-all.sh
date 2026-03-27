@@ -1,4 +1,5 @@
 #!/bin/bash
+set -euo pipefail
 
 # Script de conveniência para inicializar infraestrutura + aplicações
 # Para usar: ./start-all.sh [aplicacao]

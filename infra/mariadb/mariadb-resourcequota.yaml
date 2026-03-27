@@ -1,0 +1,17 @@
+---
+# ResourceQuota para namespace mariadb
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: mariadb-quota
+  namespace: mariadb
+  labels:
+    app.kubernetes.io/part-of: brioit-local
+spec:
+  hard:
+    requests.cpu: "500m"
+    requests.memory: "512Mi"
+    limits.cpu: "1"
+    limits.memory: "2Gi"
+    pods: "5"
+    persistentvolumeclaims: "3"

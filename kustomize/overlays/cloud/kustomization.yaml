@@ -1,0 +1,85 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+# Overlay CLOUD - ambientes gerenciados (EKS, GKE, AKS, etc.)
+# Uso: kubectl apply -k kustomize/overlays/cloud/
+
+bases:
+  - ../../base
+
+# Patches específicos para ambiente cloud
+patches:
+  # PostgreSQL - trocar storageClassName para managed (ex: gp2, standard, managed-premium)
+  - patch: |-
+      apiVersion: v1
+      kind: PersistentVolumeClaim
+      metadata:
+        name: postgres-data-postgres-0
+        namespace: postgres
+      spec:
+        storageClassName: managed
+    target:
+      kind: PersistentVolumeClaim
+      labelSelector: "app.kubernetes.io/name=postgres"
+
+  # MariaDB - trocar storageClassName para managed
+  - patch: |-
+      apiVersion: v1
+      kind: PersistentVolumeClaim
+      metadata:
+        name: mariadb-data-mariadb-0
+        namespace: mariadb
+      spec:
+        storageClassName: managed
+    target:
+      kind: PersistentVolumeClaim
+      labelSelector: "app.kubernetes.io/name=mariadb"
+
+  # Redis - trocar storageClassName para managed
+  - patch: |-
+      apiVersion: v1
+      kind: PersistentVolumeClaim
+      metadata:
+        name: redis-data-redis-0
+        namespace: redis
+      spec:
+        storageClassName: managed
+    target:
+      kind: PersistentVolumeClaim
+      labelSelector: "app.kubernetes.io/name=redis"
+
+  # Prometheus - recursos maiores em cloud
+  - patch: |-
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: prometheus
+        namespace: prometheus
+      spec:
+        template:
+          spec:
+            containers:
+              - name: prometheus
+                resources:
+                  requests:
+                    cpu: "500m"
+                    memory: "1Gi"
+                  limits:
+                    cpu: "2"
+                    memory: "4Gi"
+    target:
+      kind: Deployment
+      name: prometheus
+
+# Labels específicos do ambiente
+commonLabels:
+  environment: cloud
+
+# ConfigMap generator para configurações cloud
+configMapGenerator:
+  - name: cluster-config
+    literals:
+      - ENVIRONMENT=cloud
+      - CLUSTER_NAME=brioit-cloud
+      - INGRESS_CLASS=nginx
+      - BASE_DOMAIN=brioit.com.br

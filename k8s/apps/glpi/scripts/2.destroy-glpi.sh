@@ -1,5 +1,5 @@
 #!/bin/bash
-set -e
+set -euo pipefail
 
 # Script para remoção da aplicação GLPI
 # MANTÉM: Base de dados MariaDB, Redis e dados PVC em hostPath

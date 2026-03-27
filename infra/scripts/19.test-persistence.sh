@@ -1,5 +1,5 @@
 #!/bin/bash
-set -e
+set -euo pipefail
 
 # Script para remover APENAS o cluster k3d mantendo TODOS os dados persistentes
 # Ideal para testar persistência de dados

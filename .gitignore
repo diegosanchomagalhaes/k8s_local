@@ -63,6 +63,10 @@ k8s/apps/glpi/glpi-secret-db.yaml
 k8s/apps/glpi/mariadb-secret.yaml
 k8s/apps/glpi/glpi-mariadb-secret.yaml
 k8s/apps/prometheus/prometheus-secret-db.yaml
+k8s/apps/zabbix/zabbix-secret-db.yaml
+
+# Logs de deploy
+deployment.log
 
 # Excluir secrets mas manter templates/exemplos
 !**/secrets/template/
