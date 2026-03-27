@@ -1,0 +1,117 @@
+# OpenClaw Deployment
+# Gateway de IA pessoal - sem dependência de banco de dados
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: openclaw
+  namespace: openclaw
+  labels:
+    app: openclaw
+    component: gateway
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: openclaw
+  template:
+    metadata:
+      labels:
+        app: openclaw
+        component: gateway
+    spec:
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+
+      # Init container para corrigir permissões dos volumes hostPath
+      initContainers:
+        - name: fix-permissions
+          image: busybox:1.37.0
+          command:
+            - sh
+            - -c
+            - |
+              echo "Corrigindo permissões dos volumes para UID/GID 1000 (node)..."
+              chown -R 1000:1000 /home/node/.openclaw /home/node/.openclaw/workspace
+              chmod -R 755 /home/node/.openclaw /home/node/.openclaw/workspace
+              echo "Permissões corrigidas com sucesso!"
+          volumeMounts:
+            - name: openclaw-config
+              mountPath: /home/node/.openclaw
+            - name: openclaw-workspace
+              mountPath: /home/node/.openclaw/workspace
+          securityContext:
+            runAsUser: 0 # Root para poder alterar permissões
+
+      containers:
+        - name: openclaw
+          image: ghcr.io/openclaw/openclaw:latest
+          imagePullPolicy: IfNotPresent
+          command:
+            - node
+            - dist/index.js
+            - gateway
+            - --bind
+            - lan
+            - --port
+            - "18789"
+          ports:
+            - containerPort: 18789
+              name: gateway
+              protocol: TCP
+            - containerPort: 18790
+              name: bridge
+              protocol: TCP
+
+          # Variáveis de ambiente via Secret
+          envFrom:
+            - secretRef:
+                name: openclaw-secret
+
+          env:
+            - name: HOME
+              value: /home/node
+            - name: TERM
+              value: xterm-256color
+
+          volumeMounts:
+            - name: openclaw-config
+              mountPath: /home/node/.openclaw
+            - name: openclaw-workspace
+              mountPath: /home/node/.openclaw/workspace
+
+          # Probes de saúde (endpoints nativos do OpenClaw Gateway)
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 18789
+            initialDelaySeconds: 30
+            periodSeconds: 30
+            failureThreshold: 3
+            timeoutSeconds: 5
+
+          readinessProbe:
+            httpGet:
+              path: /readyz
+              port: 18789
+            initialDelaySeconds: 15
+            periodSeconds: 15
+            failureThreshold: 3
+            timeoutSeconds: 5
+
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "100m"
+            limits:
+              memory: "1Gi"
+              cpu: "1000m"
+
+      volumes:
+        - name: openclaw-config
+          persistentVolumeClaim:
+            claimName: openclaw-config-pvc
+        - name: openclaw-workspace
+          persistentVolumeClaim:
+            claimName: openclaw-workspace-pvc

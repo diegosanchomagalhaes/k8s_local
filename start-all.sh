@@ -10,6 +10,7 @@ set -euo pipefail
 #   ./start-all.sh prometheus   # Inicializa infra + somente prometheus
 #   ./start-all.sh glpi         # Inicializa infra + somente glpi
 #   ./start-all.sh zabbix       # Inicializa infra + somente zabbix
+#   ./start-all.sh openclaw    # Inicializa infra + somente openclaw
 
 echo "🚀 Iniciando ambiente completo..."
 
@@ -26,7 +27,7 @@ cd "$PROJECT_ROOT"
 SPECIFIC_APP="$1"
 
 # Lista de aplicações disponíveis
-AVAILABLE_APPS=("n8n" "grafana" "prometheus" "glpi" "zabbix")
+AVAILABLE_APPS=("n8n" "grafana" "prometheus" "glpi" "zabbix" "openclaw")
 
 # =================================================================
 # FUNÇÃO: VERIFICAR SE APLICAÇÃO TEM DADOS PERSISTENTES
@@ -231,6 +232,9 @@ for app in "${AVAILABLE_APPS[@]}"; do
             "zabbix")
                 echo "   ✅ zabbix - https://zabbix.local.127.0.0.1.nip.io:8443"
                 ;;
+            "openclaw")
+                echo "   ✅ openclaw - https://openclaw.local.127.0.0.1.nip.io:8443"
+                ;;
             *)
                 echo "   ✅ $app"
                 ;;
@@ -247,6 +251,7 @@ echo "   ./start-all.sh grafana      # Somente grafana"
 echo "   ./start-all.sh prometheus   # Somente prometheus"
 echo "   ./start-all.sh glpi         # Somente glpi"
 echo "   ./start-all.sh zabbix       # Somente zabbix"
+echo "   ./start-all.sh openclaw    # Somente openclaw"
 echo ""
 echo "🔄 Comportamento inteligente:"
 echo "   • Se existem dados em /home/dsm/cluster/applications/[app]/ → Preserva dados existentes"

@@ -1,0 +1,42 @@
+# OpenClaw PVs - Persistent Volumes para dados da aplicação
+# Estrutura: /mnt/cluster/applications/openclaw/
+
+# PV para configuração e dados do OpenClaw (~/.openclaw)
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: openclaw-config-pv-hostpath
+  labels:
+    app: openclaw
+    component: config
+    storage-type: hostpath
+spec:
+  capacity:
+    storage: 5Gi
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: hostpath-storage
+  hostPath:
+    path: /mnt/cluster/applications/openclaw/config
+    type: DirectoryOrCreate
+---
+# PV para workspace do OpenClaw (~/.openclaw/workspace)
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: openclaw-workspace-pv-hostpath
+  labels:
+    app: openclaw
+    component: workspace
+    storage-type: hostpath
+spec:
+  capacity:
+    storage: 2Gi
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: hostpath-storage
+  hostPath:
+    path: /mnt/cluster/applications/openclaw/workspace
+    type: DirectoryOrCreate

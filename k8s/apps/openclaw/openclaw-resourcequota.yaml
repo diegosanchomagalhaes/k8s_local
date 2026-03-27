@@ -1,0 +1,17 @@
+---
+# ResourceQuota para namespace openclaw
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: openclaw-quota
+  namespace: openclaw
+  labels:
+    app.kubernetes.io/part-of: brioit-local
+spec:
+  hard:
+    requests.cpu: "100m"
+    requests.memory: "256Mi"
+    limits.cpu: "1"
+    limits.memory: "1Gi"
+    pods: "5"
+    persistentvolumeclaims: "3"

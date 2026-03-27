@@ -1,0 +1,42 @@
+# OpenClaw PVCs - Persistent Volume Claims
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: openclaw-config-pvc
+  namespace: openclaw
+  labels:
+    app: openclaw
+    component: config
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: hostpath-storage
+  selector:
+    matchLabels:
+      app: openclaw
+      component: config
+      storage-type: hostpath
+  resources:
+    requests:
+      storage: 5Gi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: openclaw-workspace-pvc
+  namespace: openclaw
+  labels:
+    app: openclaw
+    component: workspace
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: hostpath-storage
+  selector:
+    matchLabels:
+      app: openclaw
+      component: workspace
+      storage-type: hostpath
+  resources:
+    requests:
+      storage: 2Gi
