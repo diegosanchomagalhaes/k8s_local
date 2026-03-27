@@ -28,7 +28,7 @@ spec:
       # Init container para corrigir permissões dos volumes hostPath
       initContainers:
         - name: fix-permissions
-          image: busybox:1.36
+          image: busybox:1.37.0
           command:
             - sh
             - -c
@@ -45,7 +45,7 @@ spec:
 
       containers:
         - name: zabbix-server
-          image: zabbix/zabbix-server-pgsql:ubuntu-7.4.5
+          image: zabbix/zabbix-server-pgsql:ubuntu-7.4.8
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 10051

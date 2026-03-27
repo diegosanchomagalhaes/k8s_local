@@ -22,7 +22,7 @@ spec:
     spec:
       containers:
         - name: zabbix-web-service
-          image: zabbix/zabbix-web-service:ubuntu-7.4.5
+          image: zabbix/zabbix-web-service:ubuntu-7.4.8
           ports:
             - containerPort: 10053
               name: web-service

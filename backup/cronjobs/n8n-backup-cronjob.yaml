@@ -13,7 +13,7 @@ spec:
           serviceAccountName: backup-service-account
           containers:
             - name: backup
-              image: postgres:16
+              image: postgres:16.13
               command:
                 - /bin/bash
                 - -c

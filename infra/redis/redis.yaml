@@ -22,7 +22,7 @@ spec:
     spec:
       containers:
         - name: redis
-          image: redis:8.2.3
+          image: redis:8.6.2
           ports:
             - containerPort: 6379
               name: redis

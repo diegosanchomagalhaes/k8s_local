@@ -17,7 +17,7 @@ spec:
         fsGroup: 1000
       initContainers:
         - name: create-database
-          image: postgres:16
+          image: postgres:16.13
           env:
             - name: PGHOST
               valueFrom:
@@ -54,14 +54,19 @@ spec:
               psql -h $PGHOST -p $PGPORT -U $PGUSER -d postgres -tc "SELECT 1 FROM pg_database WHERE datname = 'n8n'" | grep -q 1 || psql -h $PGHOST -p $PGPORT -U $PGUSER -d postgres -c "CREATE DATABASE n8n"
               echo "Database setup complete!"
         - name: fix-permissions
-          image: busybox
+          image: busybox:1.37.0
           command:
             - sh
             - -c
             - |
               echo "Fixing permissions for n8n directories..."
               chown -R 1000:1000 /home/node/.n8n /files
-              chmod -R 755 /home/node/.n8n /files
+              chmod 755 /home/node/.n8n
+              chmod 755 /files
+              # n8n v2: settings file must be 0600 (N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS=true by default)
+              if [ -f /home/node/.n8n/config ]; then
+                chmod 600 /home/node/.n8n/config
+              fi
               echo "Permissions fixed!"
           volumeMounts:
             - name: n8n-data
@@ -72,7 +77,7 @@ spec:
             runAsUser: 0
       containers:
         - name: n8n
-          image: n8nio/n8n:1.119.1
+          image: n8nio/n8n:2.13.4
           securityContext:
             runAsUser: 1000
             runAsGroup: 1000
@@ -132,12 +137,29 @@ spec:
             # Session configuration for HTTPS
             - name: N8N_SESSION_COOKIE_SECURE
               value: "true"
-            # Task runners configuration (remove deprecation warning)
+            # Task runners configuration (v2: habilitado por padrão, explícito aqui)
             - name: N8N_RUNNERS_ENABLED
               value: "true"
-            # Environment access security (remove deprecation warning)
+            # Environment access security
+            # v2 padrão: true (bloqueia process.env em Code nodes)
+            # ATENÇÃO: Mantido false para compatibilidade com workflows existentes.
+            # Se nenhum workflow usar process.env, mude para "true" (mais seguro).
             - name: N8N_BLOCK_ENV_ACCESS_IN_NODE
               value: "false"
+            # v2: modo de armazenamento de dados binários (filesystem por padrão no modo regular)
+            # Necessário para remover o modo deprecated "default" (in-memory)
+            - name: N8N_DEFAULT_BINARY_DATA_MODE
+              value: "filesystem"
+            # v2: restrição de acesso a arquivos (padrão: ~/.n8n-files)
+            # Definido explicitamente para permitir o volume /files (n8n-data-pvc)
+            - name: N8N_RESTRICT_FILE_ACCESS_TO
+              value: "/files"
+            # v2: chave de criptografia explícita (evita perda de credenciais em recriação de pod)
+            - name: N8N_ENCRYPTION_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: n8n-db-secret
+                  key: N8N_ENCRYPTION_KEY
             # Performance optimizations
             - name: NODE_OPTIONS
               value: "--max-old-space-size=1536 --max-http-header-size=16384"

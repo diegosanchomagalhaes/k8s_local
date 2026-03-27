@@ -17,7 +17,7 @@ spec:
         fsGroup: 65534 # nobody group for Prometheus
       initContainers:
         - name: create-database
-          image: postgres:16
+          image: postgres:16.13
           env:
             - name: PGHOST
               valueFrom:
@@ -54,7 +54,7 @@ spec:
               psql -h $PGHOST -p $PGPORT -U $PGUSER -d postgres -tc "SELECT 1 FROM pg_database WHERE datname = 'prometheus'" | grep -q 1 || psql -h $PGHOST -p $PGPORT -U $PGUSER -d postgres -c "CREATE DATABASE prometheus"
               echo "Database setup complete!"
         - name: fix-permissions
-          image: busybox
+          image: busybox:1.37.0
           command:
             - sh
             - -c
@@ -71,7 +71,7 @@ spec:
           securityContext:
             runAsUser: 0
         - name: setup-config
-          image: busybox
+          image: busybox:1.37.0
           command:
             - sh
             - -c
@@ -182,7 +182,7 @@ spec:
               mountPath: /etc/prometheus
       containers:
         - name: prometheus
-          image: prom/prometheus:v3.7.3
+          image: prom/prometheus:v3.10.0
           securityContext:
             runAsUser: 65534
             runAsGroup: 65534

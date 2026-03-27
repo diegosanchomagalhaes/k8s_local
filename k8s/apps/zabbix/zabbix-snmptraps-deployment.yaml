@@ -22,7 +22,7 @@ spec:
     spec:
       containers:
         - name: zabbix-snmptraps
-          image: zabbix/zabbix-snmptraps:ubuntu-7.4.5
+          image: zabbix/zabbix-snmptraps:ubuntu-7.4.8
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 162

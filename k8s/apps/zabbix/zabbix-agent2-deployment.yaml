@@ -22,7 +22,7 @@ spec:
     spec:
       containers:
         - name: zabbix-agent2
-          image: zabbix/zabbix-agent2:ubuntu-7.4.5
+          image: zabbix/zabbix-agent2:ubuntu-7.4.8
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 10050
