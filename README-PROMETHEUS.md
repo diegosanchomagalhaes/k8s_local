@@ -33,25 +33,22 @@
 
 ### 🔐 Acesso à Aplicação
 
-| Item                | Valor                                                      | Observação                         |
-| ------------------- | ---------------------------------------------------------- | ---------------------------------- |
-| 🌐 **URL**          | `https://prometheus.local.127.0.0.1.nip.io:8443`           | Usar sempre HTTPS na porta 8443    |
-| 👤 **Autenticação** | **🔓 SEM AUTENTICAÇÃO**                                    | Prometheus não possui login padrão |
-| 🔑 **Senha**        | Não requerida                                              | Acesso direto pela URL             |
-| 💾 **Database**     | PostgreSQL 16.13 (`postgres.postgres.svc.cluster.local:5432`) | Database: `prometheus`             |
-| 🗄️ **Cache**        | Redis 8.6.2 (`redis.redis.svc.cluster.local:6379`)         | Database: DB3                      |
-| 📊 **TSDB**         | `/prometheus` (volume persistente)                         | Time Series Database para métricas |
+| Item                | Valor                                                         | Observação                                                     |
+| ------------------- | ------------------------------------------------------------- | -------------------------------------------------------------- |
+| 🌐 **URL**          | `https://prometheus.local.127.0.0.1.nip.io:8443`              | Usar sempre HTTPS na porta 8443                                |
+| 👤 **Autenticação** | **� BasicAuth via Traefik (usuario: `admin`)**                | Senha definida no secret `basic-auth` (namespace `prometheus`) |
+| 🔑 **Senha**        | Configurada em `prometheus-basicauth.yaml`                    | Altere antes de usar em produção!                              |
+| 💾 **Database**     | PostgreSQL 16.13 (`postgres.postgres.svc.cluster.local:5432`) | Database: `prometheus`                                         |
+| 🗄️ **Cache**        | Redis 8.6.2 (`redis.redis.svc.cluster.local:6379`)            | Database: DB3                                                  |
+| 📊 **TSDB**         | `/prometheus` (volume persistente)                            | Time Series Database para métricas                             |
 
 > ⚠️ **IMPORTANTE**:
 >
-> - Prometheus **NÃO possui autenticação nativa** por padrão
-> - Para ambientes de produção, considere adicionar autenticação via:
->   - Reverse proxy (Nginx, Traefik) com Basic Auth
->   - OAuth2 Proxy para SSO
->   - Network Policies do Kubernetes para restringir acesso
+> - Prometheus possui **BasicAuth via Traefik Middleware** (`prometheus-auth`)
+> - Para alterar a senha: gerar hash com `htpasswd -nb admin 'nova-senha' | base64` e editar `prometheus-basicauth.yaml`
 > - A porta 8443 é necessária (k3d mapeia 443→8443)
 > - Aceite o certificado self-signed no navegador
-> - **NÃO exponha Prometheus diretamente na internet pública sem autenticação!**
+> - A flag `--web.enable-admin-api` foi **removida** por segurança
 
 ## 🏗 Arquitetura
 
@@ -62,11 +59,15 @@ k8s/apps/prometheus/
 ├── prometheus-namespace.yaml          # Namespace dedicado
 ├── prometheus-secret-db.yaml          # Credenciais completas (DB + Redis)
 ├── prometheus-secret-db.yaml.template # Template seguro
+├── prometheus-configmap.yaml          # Configuração prometheus.yml (Kubernetes SD)
+├── prometheus-basicauth.yaml          # Traefik Middleware + Secret BasicAuth
+├── prometheus-networkpolicy.yaml      # NetworkPolicy (ingress/egress)
+├── prometheus-resourcequota.yaml      # ResourceQuota do namespace
 ├── prometheus-deployment.yaml         # Deployment Prometheus v3.10.0
 ├── prometheus-service.yaml           # Service ClusterIP
 ├── prometheus-hpa.yaml               # Auto-scaling (CPU + Memória)
 ├── prometheus-certificate.yaml       # Certificado TLS automático
-├── prometheus-ingress.yaml           # Ingress HTTPS
+├── prometheus-ingress.yaml           # Ingress HTTPS + anotação BasicAuth
 ├── prometheus-pvc.yaml               # Persistent Volume Claims
 ├── prometheus-pv-hostpath.yaml       # Persistent Volumes (hostPath)
 ├── prometheus-pv-hostpath.yaml.template # Template PV

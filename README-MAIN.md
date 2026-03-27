@@ -74,13 +74,13 @@ nano k8s/apps/zabbix/zabbix-secret-db.yaml         # Zabbix (PG + Redis DB4)
 
 ### **🌐 Acesso Rápido**
 
-| Aplicação              | URL de Acesso                                  | Credenciais Padrão                                | Status   |
-| ---------------------- | ---------------------------------------------- | ------------------------------------------------- | -------- |
-| **n8n 2.13.4**         | https://n8n.local.127.0.0.1.nip.io:8443        | 👤 Criar conta no 1º acesso                       | ✅       |
-| **Grafana 12.4.2**     | https://grafana.local.127.0.0.1.nip.io:8443    | 👤 `admin` / 🔑 `admin` ⚠️ Troque no 1º login     | ✅       |
-| **Prometheus v3.10.0** | https://prometheus.local.127.0.0.1.nip.io:8443 | 🔓 Sem autenticação (acesso direto)               | ✅       |
-| **GLPI 11.0.6**        | https://glpi.local.127.0.0.1.nip.io:8443       | 👤 `glpi` / 🔑 `glpi` (Super Admin)               | ✅       |
-| **Zabbix 7.4.8**       | https://zabbix.local.127.0.0.1.nip.io:8443     | 👤 `Admin` / 🔑 `zabbix` ⚠️ ALTERE IMEDIATAMENTE! | 📦 Ready |
+| Aplicação              | URL de Acesso                                  | Credenciais Padrão                                                               | Status   |
+| ---------------------- | ---------------------------------------------- | -------------------------------------------------------------------------------- | -------- |
+| **n8n 2.13.4**         | https://n8n.local.127.0.0.1.nip.io:8443        | 👤 Criar conta no 1º acesso                                                      | ✅       |
+| **Grafana 12.4.2**     | https://grafana.local.127.0.0.1.nip.io:8443    | 👤 `admin` / 🔑 `admin` ⚠️ Troque no 1º login                                    | ✅       |
+| **Prometheus v3.10.0** | https://prometheus.local.127.0.0.1.nip.io:8443 | 🔐 BasicAuth: `admin` / definido no secret `basic-auth` (namespace `prometheus`) | ✅       |
+| **GLPI 11.0.6**        | https://glpi.local.127.0.0.1.nip.io:8443       | 👤 `glpi` / 🔑 `glpi` (Super Admin)                                              | ✅       |
+| **Zabbix 7.4.8**       | https://zabbix.local.127.0.0.1.nip.io:8443     | 👤 `Admin` / 🔑 `zabbix` ⚠️ ALTERE IMEDIATAMENTE!                                | 📦 Ready |
 
 #### 🔐 **Credenciais GLPI Adicionais**
 

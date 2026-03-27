@@ -176,3 +176,61 @@ Após configurar TODAS as senhas:
 - **Sempre** use templates para repositórios públicos
 - **Configure** `.gitignore` corretamente
 - **Gere** senhas seguras para produção
+
+---
+
+## 🛡️ Melhorias de Segurança (v2.0.0)
+
+### Secrets Removidos do Git
+
+Os seguintes arquivos foram removidos do tracking do Git (não rastreados mais):
+
+```bash
+# Removidos com git rm --cached
+infra/redis/redis-secret.yaml
+k8s/apps/prometheus/prometheus-secret-db.yaml
+k8s/apps/zabbix/zabbix-secret-db.yaml
+```
+
+Todos os padrões de secrets já estão protegidos no `.gitignore`.
+
+### BasicAuth no Prometheus
+
+O Prometheus agora possui autenticação básica via **Traefik Middleware**. A configuração está em `k8s/apps/prometheus/prometheus-basicauth.yaml`.
+
+**Alterar senha padrão antes de usar:**
+
+```bash
+# Gerar hash bcrypt da nova senha
+htpasswd -nb admin 'nova-senha-segura' | base64
+
+# Editar o secret no arquivo
+nano k8s/apps/prometheus/prometheus-basicauth.yaml
+# Substituir o valor em data.users com o hash gerado
+
+# Aplicar
+kubectl apply -f k8s/apps/prometheus/prometheus-basicauth.yaml
+```
+
+> ⚠️ A senha padrão (`prometheus-admin`) deve ser alterada **antes** de usar em qualquer ambiente.
+
+### NetworkPolicy — Isolamento de Rede
+
+Todos os namespaces possuem `NetworkPolicy` que restringe o tráfego de entrada e saída:
+
+| Namespace    | Ingress permitido                             | Egress permitido                        |
+| ------------ | --------------------------------------------- | --------------------------------------- |
+| `postgres`   | n8n, grafana, prometheus, zabbix, glpi (5432) | DNS (kube-system)                       |
+| `mariadb`    | glpi, zabbix (3306)                           | DNS (kube-system)                       |
+| `redis`      | n8n, prometheus (6379)                        | DNS (kube-system)                       |
+| `n8n`        | kube-system/Traefik                           | postgres, redis, HTTPS externo          |
+| `grafana`    | kube-system/Traefik                           | postgres, prometheus                    |
+| `prometheus` | kube-system/Traefik, grafana                  | postgres, redis, k8s API, scraping, DNS |
+| `zabbix`     | kube-system/Traefik                           | postgres, mariadb, redis, SNMP, DNS     |
+| `glpi`       | kube-system/Traefik                           | mariadb, HTTPS externo, DNS             |
+
+> ⚠️ Antes de aplicar NetworkPolicies em produção, valide todas as comunicações entre serviços.
+
+### Remoção de Admin API do Prometheus
+
+A flag `--web.enable-admin-api` foi removida do deployment do Prometheus. Essa flag expunha endpoints administrativos que poderiam ser usados para deletar dados ou snapshot do TSDB sem autenticação adicional.

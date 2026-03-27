@@ -49,15 +49,15 @@ k3d cluster create --volume "/home/dsm/cluster:/home/dsm/cluster@all"
 
 ### **Todos os Serviços Validados**
 
-| Serviço        | Status | Localização Host                            | Teste Executado          |
-| -------------- | ------ | ------------------------------------------- | ------------------------ |
-| **PostgreSQL** | ✅     | `/home/dsm/cluster/postgresql/data`         | ✅ Restart testado       |
-| **MariaDB**    | ✅     | `/home/dsm/cluster/mariadb/data`            | ✅ Restart testado       |
-| **Redis**      | ✅     | `/home/dsm/cluster/redis`                   | ✅ Validado AOF          |
-| **n8n**        | ✅     | `/home/dsm/cluster/applications/n8n`        | ✅ Workflows preservados |
-| **Grafana**    | ✅     | `/home/dsm/cluster/applications/grafana`    | ✅ Dashboards mantidos   |
-| **Prometheus** | ✅     | `/home/dsm/cluster/applications/prometheus` | ✅ TSDB preservado       |
-| **GLPI**       | ✅     | `/home/dsm/cluster/applications/glpi`       | ✅ Dados mantidos        |
+| Serviço        | Status | Localização Host                            | Teste Executado               |
+| -------------- | ------ | ------------------------------------------- | ----------------------------- |
+| **PostgreSQL** | ✅     | `/home/dsm/cluster/postgresql/data`         | ✅ Restart testado            |
+| **MariaDB**    | ✅     | `/home/dsm/cluster/mariadb/data`            | ✅ Restart testado            |
+| **Redis**      | ✅     | `/home/dsm/cluster/redis`                   | ✅ Validado AOF (StatefulSet) |
+| **n8n**        | ✅     | `/home/dsm/cluster/applications/n8n`        | ✅ Workflows preservados      |
+| **Grafana**    | ✅     | `/home/dsm/cluster/applications/grafana`    | ✅ Dashboards mantidos        |
+| **Prometheus** | ✅     | `/home/dsm/cluster/applications/prometheus` | ✅ TSDB preservado            |
+| **GLPI**       | ✅     | `/home/dsm/cluster/applications/glpi`       | ✅ Dados mantidos             |
 
 ### **🧪 Teste de Persistência Redis (Exemplo)**
 

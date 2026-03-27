@@ -47,6 +47,8 @@ glpi/
 ├── glpi-namespace.yaml           # Namespace do GLPI
 ├── glpi-secret-db.yaml          # Credenciais de banco (MariaDB + Redis)
 ├── glpi-secret-db.yaml.template # Template das credenciais
+├── glpi-networkpolicy.yaml      # NetworkPolicy (ingress/egress)
+├── glpi-resourcequota.yaml      # ResourceQuota do namespace
 ├── glpi-pv-hostpath.yaml        # Persistent Volumes (hostPath)
 ├── glpi-pv-hostpath.yaml.template # Template dos PVs
 ├── glpi-pvc.yaml                # Persistent Volume Claims

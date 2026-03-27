@@ -16,6 +16,9 @@
 - ✅ **hostPath Persistence**: Dados em `/home/dsm/cluster/pvc/grafana` (TRUE PaaS)
 - ✅ **Separated PV/PVC**: Arquitetura limpa com PV/PVC separados
 - ✅ **Security**: Secrets, non-root user, resource limits
+- ✅ **DataSource ConfigMap**: Prometheus provisionado automaticamente via ConfigMap (`grafana-datasources-configmap.yaml`)
+- ✅ **NetworkPolicy**: Ingress do Traefik; egress para PostgreSQL e Prometheus
+- ✅ **ResourceQuota**: CPU 200m/1, Memória 512Mi/1Gi, pods: 5
 
 ## 🌐 **Acesso**
 

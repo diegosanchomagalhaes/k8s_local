@@ -7,7 +7,7 @@
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-blue)](https://www.postgresql.org/)
 [![MariaDB](https://img.shields.io/badge/MariaDB-12.2.2-orange)](https://mariadb.org/)
 [![Redis](https://img.shields.io/badge/Redis-8.6.2-red)](https://redis.io/)
-[![n8n](https://img.shields.io/badge/n8n-1.118.2-orange)](https://n8n.io/)
+[![n8n](https://img.shields.io/badge/n8n-2.13.4-orange)](https://n8n.io/)
 [![Grafana](https://img.shields.io/badge/Grafana-12.4.2-orange)](https://grafana.com/)
 [![Prometheus](https://img.shields.io/badge/Prometheus-v3.10.0-orange)](https://prometheus.io/)
 [![GLPI](https://img.shields.io/badge/GLPI-11.0.6-blue)](https://glpi-project.org/)
@@ -31,19 +31,25 @@
 - ✅ **Permissões Configuradas**: fsGroup correto para todos os componentes
 - ✅ **TRUE PaaS BEHAVIOR**: Dados sobrevivem à destruição/recriação do cluster
 - ✅ **Scripts de Limpeza**: Destruição completa e segura do ambiente
+- ✅ **NetworkPolicy**: Isolamento de rede entre namespaces (ingress + egress controlados)
+- ✅ **ResourceQuota**: Limites de CPU, memória e pods por namespace
+- ✅ **PodDisruptionBudget**: Alta disponibilidade durante manutenção (postgres, mariadb, redis)
+- ✅ **BasicAuth Prometheus**: Autenticação via Traefik Middleware no ingress
+- ✅ **Backup CronJobs**: Backup automático diário para grafana, prometheus, zabbix, glpi
+- ✅ **Kustomize**: Estrutura base/overlays para ambientes local e cloud
 
 ## 🌐 **Pontos de Acesso**
 
-| Serviço        | URL/Endpoint                                     | Porta | Tipo      |
-| -------------- | ------------------------------------------------ | ----- | --------- |
-| **n8n**        | `https://n8n.local.127.0.0.1.nip.io:8443`        | 8443  | HTTPS/TLS |
-| **Grafana**    | `https://grafana.local.127.0.0.1.nip.io:8443`    | 8443  | HTTPS/TLS |
-| **Prometheus** | `https://prometheus.local.127.0.0.1.nip.io:8443` | 8443  | HTTPS/TLS |
-| **GLPI**       | `https://glpi.local.127.0.0.1.nip.io:8443`       | 8443  | HTTPS/TLS |
-| **Zabbix**     | `https://zabbix.local.127.0.0.1.nip.io:8443`     | 8443  | HTTPS/TLS |
-| **PostgreSQL** | `localhost:30432`                                | 30432 | NodePort  |
-| **MariaDB**    | `localhost:30306`                                | 30306 | NodePort  |
-| **Redis**      | `redis.redis.svc.cluster.local:6379`             | 6379  | ClusterIP |
+| Serviço        | URL/Endpoint                                     | Porta | Tipo                  |
+| -------------- | ------------------------------------------------ | ----- | --------------------- |
+| **n8n**        | `https://n8n.local.127.0.0.1.nip.io:8443`        | 8443  | HTTPS/TLS             |
+| **Grafana**    | `https://grafana.local.127.0.0.1.nip.io:8443`    | 8443  | HTTPS/TLS             |
+| **Prometheus** | `https://prometheus.local.127.0.0.1.nip.io:8443` | 8443  | HTTPS/TLS + BasicAuth |
+| **GLPI**       | `https://glpi.local.127.0.0.1.nip.io:8443`       | 8443  | HTTPS/TLS             |
+| **Zabbix**     | `https://zabbix.local.127.0.0.1.nip.io:8443`     | 8443  | HTTPS/TLS             |
+| **PostgreSQL** | `localhost:30432`                                | 30432 | NodePort              |
+| **MariaDB**    | `localhost:30306`                                | 30306 | NodePort              |
+| **Redis**      | `redis.redis.svc.cluster.local:6379`             | 6379  | ClusterIP             |
 
 > ⚠️ **Porta 8443**: k3d mapeia `443→8443` para evitar privilégios root  
 > 🌐 **DNS nip.io**: Resolve automaticamente para 127.0.0.1 sem modificar /etc/hosts

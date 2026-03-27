@@ -25,6 +25,8 @@
 - ✅ **Auto-scaling**: 7 HPAs configurados (todos componentes exceto SNMP Traps)
 - ✅ **hostPath Persistence**: Dados em `/home/dsm/cluster/pvc/zabbix/{server,web,proxy,snmptraps}`
 - ✅ **Security**: Secrets, non-root user, resource limits
+- ✅ **NetworkPolicy**: Ingress do Traefik; egress para postgres, mariadb, redis, SNMP e DNS
+- ✅ **ResourceQuota**: CPU 1/4, Memória 1Gi/4Gi, pods: 15
 
 ## 🌐 **Acesso**
 

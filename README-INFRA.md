@@ -48,16 +48,27 @@ A infraestrutura base é composta por:
 - **Recursos**:
   - CPU: 100m (request) / 500m (limit)
   - Memória: 256Mi (request) / 1Gi (limit)
+- **Probes**: liveness + readiness via `pg_isready -U postgres`
+- **updateStrategy**: `RollingUpdate`
+- **PodDisruptionBudget**: `maxUnavailable: 0`
+- **NetworkPolicy**: apenas n8n, grafana, prometheus, zabbix e glpi acessam na porta 5432
+- **ResourceQuota**: CPU 500m/1, Memória 512Mi/2Gi, pods: 5
 
 ### 🔴 Redis
 
 - **Versão**: Redis 8.6.2
 - **Namespace**: `redis`
 - **Service**: `redis.redis.svc.cluster.local:6379`
-- **Tipo**: Deployment com PersistentVolumeClaim
+- **Tipo**: **StatefulSet** com PersistentVolumeClaim (migrado de Deployment em v2.0.0)
 - **Função**: Cache backend compartilhado para todas as aplicações
 - **Storage**: hostPath (`/home/dsm/cluster/redis` → `/mnt/cluster/redis`)
 - **Autenticação**: Password protegido via Secret
+- **updateStrategy**: `RollingUpdate`
+- **PodDisruptionBudget**: `maxUnavailable: 0` (sem downtime em manutenção)
+- **NetworkPolicy**: restrito — apenas n8n e prometheus acessam na porta 6379
+- **ResourceQuota**: CPU 200m/1, Memória 512Mi/1500Mi, pods: 5
+
+> ⚠️ **Migração v1→v2**: ao atualizar de Deployment para StatefulSet, remova o Deployment antigo antes: `kubectl delete deployment redis -n redis`
 
 #### **Distribuição de Databases Redis:**
 
