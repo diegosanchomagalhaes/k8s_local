@@ -11,6 +11,30 @@ e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR
 
 ---
 
+## [2.2.0] - 2026-04-20
+
+### Adicionado
+
+- **OpenClaw**: criação de `README-OPENCLAW.md` com documentação completa (arquitetura, deploy, credenciais, troubleshooting)
+- **README-MAIN.md** e **README.md** atualizados com referências ao OpenClaw (badge, tabelas de acesso, roadmap)
+- **OpenClaw** adicionado à lista de namespaces organizados
+
+---
+
+## [2.1.0] - 2026-04-20
+
+### Atualizado
+
+- **Imagens Docker** atualizadas para as versões mais recentes disponíveis no Docker Hub:
+  - `n8nio/n8n`: `2.13.4` → `2.17.3`
+  - `grafana/grafana`: `12.4.2` → `12.4.3`
+  - `prom/prometheus`: `v3.10.0` → `v3.11.2`
+  - `zabbix/*` (8 componentes): `ubuntu-7.4.8` → `ubuntu-7.4.9`
+- **Imagens já na versão mais recente** (sem alteração): `redis:8.6.2`, `mariadb:12.2.2`, `postgres:16.13`, `busybox:1.37.0`, `glpi/glpi:11.0.6`
+- Documentação e scripts atualizados para refletir as novas versões
+
+---
+
 ## [2.0.0] - 2025-07-17
 
 ### Segurança

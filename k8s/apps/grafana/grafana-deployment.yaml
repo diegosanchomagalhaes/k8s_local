@@ -46,7 +46,7 @@ spec:
 
       containers:
         - name: grafana
-          image: grafana/grafana:12.4.2
+          image: grafana/grafana:12.4.3
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 3000
@@ -103,7 +103,8 @@ spec:
 
             # Install plugins
             - name: GF_INSTALL_PLUGINS
-              value: "grafana-clock-panel,grafana-simple-json-datasource,grafana-worldmap-panel"
+              value: "grafana-clock-panel,grafana-simple-json-datasource,grafana-worldmap-pan\
+                el"
 
           volumeMounts:
             - name: grafana-storage

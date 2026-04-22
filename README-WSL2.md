@@ -20,8 +20,8 @@ O WSL2 precisa ser configurado adequadamente para rodar:
 - **MariaDB 12.2.2** com database (glpi)
 - **Redis 8.6.2** cache compartilhado (DB0-DB3)
 - **n8n 1.118.2** com processamento de workflows
-- **Grafana 12.4.2** dashboards e monitoramento
-- **Prometheus v3.10.0** métricas e alertas
+- **Grafana 12.4.3** dashboards e monitoramento
+- **Prometheus v3.11.2** métricas e alertas
 - **GLPI 11.0.6** service desk e inventário
 - **cert-manager** e **Traefik**
 

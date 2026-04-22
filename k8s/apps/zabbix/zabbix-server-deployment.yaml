@@ -45,7 +45,7 @@ spec:
 
       containers:
         - name: zabbix-server
-          image: zabbix/zabbix-server-pgsql:ubuntu-7.4.8
+          image: zabbix/zabbix-server-pgsql:ubuntu-7.4.9
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 10051

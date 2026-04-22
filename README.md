@@ -7,11 +7,12 @@
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-blue)](https://www.postgresql.org/)
 [![MariaDB](https://img.shields.io/badge/MariaDB-12.2.2-orange)](https://mariadb.org/)
 [![Redis](https://img.shields.io/badge/Redis-8.6.2-red)](https://redis.io/)
-[![n8n](https://img.shields.io/badge/n8n-2.13.4-orange)](https://n8n.io/)
-[![Grafana](https://img.shields.io/badge/Grafana-12.4.2-orange)](https://grafana.com/)
-[![Prometheus](https://img.shields.io/badge/Prometheus-v3.10.0-orange)](https://prometheus.io/)
+[![n8n](https://img.shields.io/badge/n8n-2.17.3-orange)](https://n8n.io/)
+[![Grafana](https://img.shields.io/badge/Grafana-12.4.3-orange)](https://grafana.com/)
+[![Prometheus](https://img.shields.io/badge/Prometheus-v3.11.2-orange)](https://prometheus.io/)
 [![GLPI](https://img.shields.io/badge/GLPI-11.0.6-blue)](https://glpi-project.org/)
-[![Zabbix](https://img.shields.io/badge/Zabbix-7.4.8-red)](https://www.zabbix.com/)
+[![Zabbix](https://img.shields.io/badge/Zabbix-7.4.9-red)](https://www.zabbix.com/)
+[![OpenClaw](https://img.shields.io/badge/OpenClaw-latest-blue)](https://openclaw.io/)
 [![cert-manager](https://img.shields.io/badge/cert--manager-v1.19.0-green)](https://cert-manager.io/)
 
 ## 🎯 **Status Atual - Infraestrutura Completa**
@@ -21,13 +22,14 @@
 - ✅ **MariaDB 12.2.2**: Banco dedicado GLPI + zabbix_proxy + persistência hostPath
 - ✅ **Redis 8.6.2**: Cache compartilhado com databases separados (DB0-DB4)
 - ✅ **n8n 1.118.2**: HTTPS + TLS automático + PostgreSQL + Redis cache + HPA
-- ✅ **Grafana 12.4.2**: Dashboards + PostgreSQL + Redis + HPA
-- ✅ **Prometheus v3.10.0**: Métricas + alertas + PostgreSQL + Redis + HPA
+- ✅ **Grafana 12.4.3**: Dashboards + PostgreSQL + Redis + HPA
+- ✅ **Prometheus v3.11.2**: Métricas + alertas + PostgreSQL + Redis + HPA
 - ✅ **GLPI 11.0.6**: Service Desk + MariaDB + Redis + HPA
-- ✅ **Zabbix 7.4.8**: Monitoramento completo (9 componentes) + 7 HPAs + PostgreSQL + MariaDB + Redis
+- ✅ **Zabbix 7.4.9**: Monitoramento completo (9 componentes) + 7 HPAs + PostgreSQL + MariaDB + Redis
+- ✅ **OpenClaw**: Gateway de IA pessoal (OpenAI, Anthropic, Google) + HPA + PVCs
 - ✅ **cert-manager v1.19.0**: Certificados TLS auto-renováveis
 - ✅ **Sistema de Backup**: PostgreSQL + MariaDB + PVCs com persistência real
-- ✅ **Namespaces Organizados**: postgres, mariadb, redis, n8n, grafana, prometheus, glpi, zabbix, cert-manager
+- ✅ **Namespaces Organizados**: postgres, mariadb, redis, n8n, grafana, prometheus, glpi, zabbix, openclaw, cert-manager
 - ✅ **Permissões Configuradas**: fsGroup correto para todos os componentes
 - ✅ **TRUE PaaS BEHAVIOR**: Dados sobrevivem à destruição/recriação do cluster
 - ✅ **Scripts de Limpeza**: Destruição completa e segura do ambiente
@@ -47,6 +49,7 @@
 | **Prometheus** | `https://prometheus.local.127.0.0.1.nip.io:8443` | 8443  | HTTPS/TLS + BasicAuth |
 | **GLPI**       | `https://glpi.local.127.0.0.1.nip.io:8443`       | 8443  | HTTPS/TLS             |
 | **Zabbix**     | `https://zabbix.local.127.0.0.1.nip.io:8443`     | 8443  | HTTPS/TLS             |
+| **OpenClaw**   | `https://openclaw.local.127.0.0.1.nip.io:8443`   | 8443  | HTTPS/TLS + Token     |
 | **PostgreSQL** | `localhost:30432`                                | 30432 | NodePort              |
 | **MariaDB**    | `localhost:30306`                                | 30306 | NodePort              |
 | **Redis**      | `redis.redis.svc.cluster.local:6379`             | 6379  | ClusterIP             |
@@ -552,6 +555,7 @@ Esta documentação está organizada de forma modular para facilitar a manutenç
 | **Prometheus**   | Métricas e alertas         | https://prometheus.local.127.0.0.1.nip.io:8443       | -                         | **[README-PROMETHEUS.md](README-PROMETHEUS.md)** |
 | **GLPI**         | Service Desk e ITSM        | https://glpi.local.127.0.0.1.nip.io:8443             | glpi / glpi               | **[README-GLPI.md](README-GLPI.md)**             |
 | **Zabbix**       | Monitoramento completo     | https://zabbix.local.127.0.0.1.nip.io:8443           | Admin / zabbix            | **[README-ZABBIX.md](README-ZABBIX.md)**         |
+| **OpenClaw**     | Gateway de IA pessoal      | https://openclaw.local.127.0.0.1.nip.io:8443         | Token via secret          | **[README-OPENCLAW.md](README-OPENCLAW.md)**     |
 | **Redis**        | Cache & Session Store      | Interno (`redis.redis.svc.cluster.local:6379`)       | -                         | Cache para n8n/grafana/glpi/prometheus/zabbix    |
 | **PostgreSQL**   | Banco de dados (Apps)      | Interno (`postgres.postgres.svc.cluster.local:5432`) | postgres / postgres_admin | **[README-INFRA.md](README-INFRA.md)**           |
 | **MariaDB**      | Banco de dados (GLPI)      | Interno (`mariadb.mariadb.svc.cluster.local:3306`)   | mariadb_admin / \*\*\*    | Base de dados para GLPI e Zabbix Proxy           |
@@ -572,7 +576,8 @@ cp -r k8s/apps/n8n/* k8s/apps/NOVA_APP/
 - **✅ Grafana**: Dashboards e monitoring (implementado)
 - **✅ Prometheus**: Métricas e alertas (implementado)
 - **✅ GLPI**: Service Desk e ITSM (implementado)
-- **✅ Zabbix**: Monitoramento completo 7.4.8 (implementado)
+- **✅ Zabbix**: Monitoramento completo 7.4.9 (implementado)
+- **✅ OpenClaw**: Gateway de IA pessoal (implementado)
 - **✅ Redis**: Cache e sessões (implementado)
 - **✅ PostgreSQL**: Base de dados para apps (implementado)
 - **✅ MariaDB**: Base de dados para GLPI e Zabbix Proxy (implementado)
@@ -801,8 +806,8 @@ kubectl get pods -n redis              # Status do Redis
 | **start-all.sh**          | Deploy completo: infra + todas apps                       | ~5min |
 | **10.start-infra.sh**     | k3d cluster + PostgreSQL + MariaDB + Redis + cert-manager | ~2min |
 | **3.start-n8n.sh**        | n8n 1.118.2 + TLS + Redis cache + hosts                   | ~1min |
-| **3.start-grafana.sh**    | Grafana 12.4.2 + TLS + PostgreSQL + hosts                 | ~1min |
-| **3.start-prometheus.sh** | Prometheus v3.10.0 + TLS + métricas + hosts               | ~1min |
+| **3.start-grafana.sh**    | Grafana 12.4.3 + TLS + PostgreSQL + hosts                 | ~1min |
+| **3.start-prometheus.sh** | Prometheus v3.11.2 + TLS + métricas + hosts               | ~1min |
 | **3.start-glpi.sh**       | GLPI 11.0.6 + MariaDB + Redis + hosts                     | ~1min |
 | **18.destroy-all.sh**     | Destruição completa: drop DB → destroy → clean filesystem | ~2min |
 | **2.destroy-infra.sh**    | Remove cluster completo (dados preservados em hostPath)   | ~30s  |

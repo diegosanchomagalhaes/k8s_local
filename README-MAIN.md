@@ -6,8 +6,9 @@
 [![k3d](https://img.shields.io/badge/k3d-v5.8.3-blue)](https://k3d.io/)
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16.13-blue)](https://www.postgresql.org/)
 [![Redis](https://img.shields.io/badge/Redis-8.6.2-red)](https://redis.io/)
-[![n8n](https://img.shields.io/badge/n8n-2.13.4-orange)](https://n8n.io/)
-[![Grafana](https://img.shields.io/badge/Grafana-12.4.2-orange)](https://grafana.com/)
+[![n8n](https://img.shields.io/badge/n8n-2.17.3-orange)](https://n8n.io/)
+[![Grafana](https://img.shields.io/badge/Grafana-12.4.3-orange)](https://grafana.com/)
+[![OpenClaw](https://img.shields.io/badge/OpenClaw-latest-blue)](https://openclaw.io/)
 [![Backup System](https://img.shields.io/badge/Backup-Automated-green)](./backup/README.md)
 
 ## 📋 Sumário
@@ -76,11 +77,12 @@ nano k8s/apps/zabbix/zabbix-secret-db.yaml         # Zabbix (PG + Redis DB4)
 
 | Aplicação              | URL de Acesso                                  | Credenciais Padrão                                                               | Status   |
 | ---------------------- | ---------------------------------------------- | -------------------------------------------------------------------------------- | -------- |
-| **n8n 2.13.4**         | https://n8n.local.127.0.0.1.nip.io:8443        | 👤 Criar conta no 1º acesso                                                      | ✅       |
-| **Grafana 12.4.2**     | https://grafana.local.127.0.0.1.nip.io:8443    | 👤 `admin` / 🔑 `admin` ⚠️ Troque no 1º login                                    | ✅       |
-| **Prometheus v3.10.0** | https://prometheus.local.127.0.0.1.nip.io:8443 | 🔐 BasicAuth: `admin` / definido no secret `basic-auth` (namespace `prometheus`) | ✅       |
+| **n8n 2.17.3**         | https://n8n.local.127.0.0.1.nip.io:8443        | 👤 Criar conta no 1º acesso                                                      | ✅       |
+| **Grafana 12.4.3**     | https://grafana.local.127.0.0.1.nip.io:8443    | 👤 `admin` / 🔑 `admin` ⚠️ Troque no 1º login                                    | ✅       |
+| **Prometheus v3.11.2** | https://prometheus.local.127.0.0.1.nip.io:8443 | 🔐 BasicAuth: `admin` / definido no secret `basic-auth` (namespace `prometheus`) | ✅       |
 | **GLPI 11.0.6**        | https://glpi.local.127.0.0.1.nip.io:8443       | 👤 `glpi` / 🔑 `glpi` (Super Admin)                                              | ✅       |
-| **Zabbix 7.4.8**       | https://zabbix.local.127.0.0.1.nip.io:8443     | 👤 `Admin` / 🔑 `zabbix` ⚠️ ALTERE IMEDIATAMENTE!                                | 📦 Ready |
+| **Zabbix 7.4.9**       | https://zabbix.local.127.0.0.1.nip.io:8443     | 👤 `Admin` / 🔑 `zabbix` ⚠️ ALTERE IMEDIATAMENTE!                                | 📦 Ready |
+| **OpenClaw**           | https://openclaw.local.127.0.0.1.nip.io:8443   | 🔑 Token definido em `OPENCLAW_GATEWAY_TOKEN`                                    | ✅       |
 
 #### 🔐 **Credenciais GLPI Adicionais**
 
@@ -201,8 +203,9 @@ k8s_local/
 | **k3d**          | 5.8.3    | Cluster Kubernetes local | `kubectl`         |
 | **PostgreSQL**   | 16.13    | Database persistente     | `localhost:30432` |
 | **Redis**        | 8.6.2    | Cache e sessões          | Interno (cluster) |
-| **n8n**          | 2.13.4   | Automação workflows      | HTTPS `:8443`     |
-| **Grafana**      | 12.4.2   | Dashboards e monitoring  | HTTPS `:8443`     |
+| **n8n**          | 2.17.3   | Automação workflows      | HTTPS `:8443`     |
+| **Grafana**      | 12.4.3   | Dashboards e monitoring  | HTTPS `:8443`     |
+| **OpenClaw**     | latest   | Gateway de IA pessoal    | HTTPS `:8443`     |
 | **Traefik**      | Built-in | Ingress Controller       | HTTP/HTTPS        |
 | **cert-manager** | 1.18.2   | Certificados TLS         | Automático        |
 
@@ -271,6 +274,7 @@ graph TD
 | Arquivo                    | Conteúdo                          |
 | -------------------------- | --------------------------------- |
 | `README.md`                | 📖 **Este arquivo** - Visão geral |
+| `README-OPENCLAW.md`       | 🦞 Gateway de IA OpenClaw         |
 | `README-SECURITY.md`       | 🔐 Configuração de segurança      |
 | `README-INFRASTRUCTURE.md` | 🏗️ Detalhes da infraestrutura     |
 | `README-DEPLOYMENT.md`     | 🚀 Guia de deployment             |
@@ -290,8 +294,10 @@ graph TD
 ### **🚀 Aplicações**
 
 ```bash
-./k8s/apps/n8n/scripts/1.deploy-n8n.sh  # Deploy n8n
-./k8s/apps/n8n/scripts/2.delete-n8n.sh  # Remover n8n
+./k8s/apps/n8n/scripts/1.deploy-n8n.sh          # Deploy n8n
+./k8s/apps/n8n/scripts/2.delete-n8n.sh          # Remover n8n
+./k8s/apps/openclaw/scripts/3.start-openclaw.sh  # Iniciar OpenClaw
+./k8s/apps/openclaw/scripts/2.destroy-openclaw.sh # Remover OpenClaw
 ```
 
 ### **🗄️ Backup**

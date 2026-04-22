@@ -20,7 +20,7 @@
 
 ### Características do Deploy
 
-- **Versão**: Prometheus v3.10.0
+- **Versão**: Prometheus v3.11.2
 - **Namespace**: `prometheus`
 - **Banco de dados**: PostgreSQL (infraestrutura compartilhada)
 - **Cache**: Redis 8.6.2 (database 3, para métricas)
@@ -63,7 +63,7 @@ k8s/apps/prometheus/
 ├── prometheus-basicauth.yaml          # Traefik Middleware + Secret BasicAuth
 ├── prometheus-networkpolicy.yaml      # NetworkPolicy (ingress/egress)
 ├── prometheus-resourcequota.yaml      # ResourceQuota do namespace
-├── prometheus-deployment.yaml         # Deployment Prometheus v3.10.0
+├── prometheus-deployment.yaml         # Deployment Prometheus v3.11.2
 ├── prometheus-service.yaml           # Service ClusterIP
 ├── prometheus-hpa.yaml               # Auto-scaling (CPU + Memória)
 ├── prometheus-certificate.yaml       # Certificado TLS automático
@@ -437,4 +437,4 @@ data:
 
 ---
 
-> 📊 **Prometheus v3.10.0** executando no cluster k3d local com integração completa Kubernetes e PostgreSQL para metadados.
+> 📊 **Prometheus v3.11.2** executando no cluster k3d local com integração completa Kubernetes e PostgreSQL para metadados.

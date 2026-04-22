@@ -1,16 +1,16 @@
 # Zabbix - Monitoramento de Infraestrutura e Aplicações
 
-> 🛡️ **Monitoramento Empresarial**: Zabbix 7.4.8 com PostgreSQL, Redis cache, TLS automático e componentes completos para monitoramento avançado.
+> 🛡️ **Monitoramento Empresarial**: Zabbix 7.4.9 com PostgreSQL, Redis cache, TLS automático e componentes completos para monitoramento avançado.
 
-[![Zabbix](https://img.shields.io/badge/Zabbix-7.4.8-red)](https://www.zabbix.com/)
+[![Zabbix](https://img.shields.io/badge/Zabbix-7.4.9-red)](https://www.zabbix.com/)
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16.13-blue)](https://www.postgresql.org/)
 [![Redis](https://img.shields.io/badge/Redis-8.6.2-red)](https://redis.io/)
 [![Kubernetes](https://img.shields.io/badge/Kubernetes-v1.34.1-blue)](https://kubernetes.io/)
 [![cert-manager](https://img.shields.io/badge/cert--manager-v1.19.0-green)](https://cert-manager.io/)
 
-## 🎯 **Status Atual - Zabbix 7.4.8 Completo**
+## 🎯 **Status Atual - Zabbix 7.4.9 Completo**
 
-- ✅ **Zabbix Server 7.4.8**: Core de monitoramento com PostgreSQL (HPA 1-3 pods)
+- ✅ **Zabbix Server 7.4.9**: Core de monitoramento com PostgreSQL (HPA 1-3 pods)
 - ✅ **Zabbix Web Frontend**: Interface web com Nginx + PHP-FPM (HPA 1-3 pods)
 - ✅ **Zabbix Proxy**: Monitoramento distribuído com MariaDB (HPA 1-3 pods)
 - ✅ **Zabbix Agent2 (Deployment)**: Agente moderno na porta 10050 (HPA 1-3 pods)
@@ -172,18 +172,18 @@ Zabbix Stack Empresarial
 │                        k3d Cluster                           │
 ├──────────────────────────────────────────────────────────────┤
 │  Namespace: zabbix                                           │
-│  ├── 🛡️ Zabbix Server (7.4.8) - Deployment                  │
+│  ├── 🛡️ Zabbix Server (7.4.9) - Deployment                  │
 │  │   └── PVC: zabbix-server-pvc (5Gi) - /var/lib/zabbix    │
-│  ├── 🌐 Zabbix Web (7.4.8) - Deployment + HPA (1-3)         │
+│  ├── 🌐 Zabbix Web (7.4.9) - Deployment + HPA (1-3)         │
 │  │   └── PVC: zabbix-web-pvc (2Gi) - /usr/share/zabbix     │
-│  ├── 📡 Zabbix Agent2 (7.4.8) - Deployment + HPA (1-3)      │
-│  ├── 📡 Zabbix Agent Classic (7.4.8) - Deployment + HPA (1-3)│
-│  ├── 🔀 Zabbix Proxy (7.4.8) - Deployment                   │
+│  ├── 📡 Zabbix Agent2 (7.4.9) - Deployment + HPA (1-3)      │
+│  ├── 📡 Zabbix Agent Classic (7.4.9) - Deployment + HPA (1-3)│
+│  ├── 🔀 Zabbix Proxy (7.4.9) - Deployment                   │
 │  │   └── PVC: zabbix-proxy-pvc (3Gi) - /var/lib/zabbix     │
-│  ├── 📶 SNMP Traps (7.4.8) - Deployment                     │
+│  ├── 📶 SNMP Traps (7.4.9) - Deployment                     │
 │  │   └── PVC: zabbix-snmptraps-pvc (1Gi) - /var/lib/zabbix │
-│  ├── ☕ Java Gateway (7.4.8) - Deployment                    │
-│  ├── 📄 Web Service (7.4.8) - Deployment                     │
+│  ├── ☕ Java Gateway (7.4.9) - Deployment                    │
+│  ├── 📄 Web Service (7.4.9) - Deployment                     │
 │  └── 🔐 Secrets: DB credentials + Redis config              │
 ├──────────────────────────────────────────────────────────────┤
 │  Namespace: postgres                                         │
@@ -239,7 +239,7 @@ Zabbix Stack Empresarial
 
 **Características**:
 
-- Image: `zabbix/zabbix-server-pgsql:ubuntu-7.4.8`
+- Image: `zabbix/zabbix-server-pgsql:ubuntu-7.4.9`
 - Port: 10051 (Zabbix trapper protocol)
 - Database: PostgreSQL com schema completo auto-criado
 - Cache: Redis DB4 para otimização de performance
@@ -270,7 +270,7 @@ Value Cache: 64M # Cache de valores
 
 **Características**:
 
-- Image: `zabbix/zabbix-web-nginx-pgsql:ubuntu-7.4.8`
+- Image: `zabbix/zabbix-web-nginx-pgsql:ubuntu-7.4.9`
 - Ports: 8080 (HTTP), 8443 (HTTPS)
 - Web Server: Nginx
 - PHP: 8.2 (memory_limit=256M, max_execution_time=600s)
@@ -294,7 +294,7 @@ Execution Time: 600s (10 minutos)
 
 **Características**:
 
-- Image: `zabbix/zabbix-agent2:ubuntu-7.4.8`
+- Image: `zabbix/zabbix-agent2:ubuntu-7.4.9`
 - Port: 10050 (agent protocol)
 - Mode: Active + Passive checks
 - Deployment: Escalável com HPA (1-3 pods)
@@ -314,7 +314,7 @@ Execution Time: 600s (10 minutos)
 
 **Características**:
 
-- Image: `zabbix/zabbix-java-gateway:ubuntu-7.4.8`
+- Image: `zabbix/zabbix-java-gateway:ubuntu-7.4.9`
 - Port: 10052 (JMX gateway)
 - Pollers: 5 threads JMX
 - Resources: 256Mi/250m (requests), 512Mi/500m (limits)
@@ -327,7 +327,7 @@ Execution Time: 600s (10 minutos)
 
 **Características**:
 
-- Image: `zabbix/zabbix-web-service:ubuntu-7.4.8`
+- Image: `zabbix/zabbix-web-service:ubuntu-7.4.9`
 - Port: 10053 (web service)
 - Resources: 128Mi/100m (requests), 256Mi/200m (limits)
 - Security: Non-root user (1997:1995)
@@ -761,7 +761,7 @@ Configure triggers para:
 
 ## 🎉 **Conclusão**
 
-Você agora tem um **Zabbix 7.4.8 completo e empresarial** rodando em Kubernetes com:
+Você agora tem um **Zabbix 7.4.9 completo e empresarial** rodando em Kubernetes com:
 
 ✅ **Alta Disponibilidade**: Auto-scaling, health checks, restart automático  
 ✅ **Performance**: Redis cache, tuning PostgreSQL, resource limits otimizados  
@@ -783,5 +783,5 @@ Você agora tem um **Zabbix 7.4.8 completo e empresarial** rodando em Kubernetes
 
 📝 **Documentação criada em**: 03/06/2025  
 🔄 **Última atualização**: 03/06/2025  
-✨ **Versão do Zabbix**: 7.4.8  
+✨ **Versão do Zabbix**: 7.4.9  
 🏗️ **Arquitetura**: Kubernetes k3d com PostgreSQL 16.13 + Redis 8.6.2

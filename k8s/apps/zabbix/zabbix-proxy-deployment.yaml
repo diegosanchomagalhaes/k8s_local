@@ -44,7 +44,7 @@ spec:
 
       containers:
         - name: zabbix-proxy
-          image: zabbix/zabbix-proxy-mysql:ubuntu-7.4.8
+          image: zabbix/zabbix-proxy-mysql:ubuntu-7.4.9
           ports:
             - containerPort: 10051
               name: proxy-trapper

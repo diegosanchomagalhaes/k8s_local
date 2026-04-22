@@ -22,7 +22,7 @@ spec:
     spec:
       containers:
         - name: zabbix-java-gateway
-          image: zabbix/zabbix-java-gateway:ubuntu-7.4.8
+          image: zabbix/zabbix-java-gateway:ubuntu-7.4.9
           ports:
             - containerPort: 10052
               name: java-gateway

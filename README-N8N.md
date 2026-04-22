@@ -20,7 +20,7 @@
 
 ### Características do Deploy
 
-- **Versão**: n8n 2.13.4
+- **Versão**: n8n 2.17.3
 - **Namespace**: `n8n`
 - **Banco de dados**: PostgreSQL (infraestrutura compartilhada)
 - **Cache**: Redis 8.6.2 (DB0 - performance otimizada)
@@ -58,7 +58,7 @@ k8s/apps/n8n/
 ├── n8n-secret-db.yaml.template # Template seguro
 ├── n8n-networkpolicy.yaml      # NetworkPolicy (ingress/egress)
 ├── n8n-resourcequota.yaml      # ResourceQuota do namespace
-├── n8n-deployment.yaml         # Deployment n8n 2.13.4
+├── n8n-deployment.yaml         # Deployment n8n 2.17.3
 ├── n8n-service.yaml           # Service ClusterIP
 ├── n8n-hpa.yaml               # Auto-scaling (CPU + Memória)
 ├── n8n-certificate.yaml       # Certificado TLS automático
