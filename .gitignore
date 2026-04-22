@@ -1,0 +1,24 @@
+# Secrets — NUNCA commitar
+**/*-secret.yaml
+**/*-secret-admin.yaml
+**/*-secret-db.yaml
+**/*-secret-*.yaml
+
+# PVs com paths absolutos gerados localmente
+**/*-pv-hostpath.yaml
+
+# Logs e temporários
+*.log
+deployment.log
+*.tmp
+*.bak
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*~
+
+# OS
+.DS_Store
+Thumbs.db

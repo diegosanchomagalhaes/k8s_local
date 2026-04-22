@@ -1,0 +1,21 @@
+apiVersion: k3d.io/v1alpha5
+kind: Simple
+metadata:
+  name: pasb-cluster
+image: rancher/k3s:v1.35.1+k3s1
+servers: 1
+agents: 2
+ports:
+  - port: 8080:80
+    nodeFilters:
+      - loadbalancer
+  - port: 8443:443
+    nodeFilters:
+      - loadbalancer
+  - port: 30432:30432
+    nodeFilters:
+      - loadbalancer
+volumes:
+  - volume: /home/dsm/cluster-pasb:/mnt/cluster
+    nodeFilters:
+      - all

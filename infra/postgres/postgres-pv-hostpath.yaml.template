@@ -1,0 +1,21 @@
+# PostgreSQL PersistentVolume com hostPath para persistência real
+# Template: substitua [CLUSTER_BASE_PATH] pelo path base antes de usar
+# Comando: sed 's|[CLUSTER_BASE_PATH]|/home/dsm/cluster-pasb|g' postgres-pv-hostpath.yaml.template > postgres-pv-hostpath.yaml
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: postgres-pv-hostpath
+  labels:
+    app: postgres
+    component: storage
+    storage-type: hostpath
+spec:
+  capacity:
+    storage: 30Gi
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: hostpath-storage
+  hostPath:
+    path: [CLUSTER_BASE_PATH]/postgresql/data
+    type: DirectoryOrCreate

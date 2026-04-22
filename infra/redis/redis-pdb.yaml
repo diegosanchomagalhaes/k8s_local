@@ -1,0 +1,13 @@
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: redis-pdb
+  namespace: redis
+  labels:
+    app.kubernetes.io/name: redis
+    app.kubernetes.io/part-of: pasb
+spec:
+  maxUnavailable: 0
+  selector:
+    matchLabels:
+      app: redis

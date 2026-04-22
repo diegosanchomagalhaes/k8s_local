@@ -1,0 +1,200 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: postgres
+  labels:
+    app.kubernetes.io/part-of: pasb
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: postgres
+  namespace: postgres
+  labels:
+    app.kubernetes.io/name: postgres
+    app.kubernetes.io/component: database
+    app.kubernetes.io/part-of: pasb
+    app.kubernetes.io/version: "16.8"
+spec:
+  serviceName: postgres
+  replicas: 1
+  updateStrategy:
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      app: postgres
+  template:
+    metadata:
+      labels:
+        app: postgres
+        app.kubernetes.io/name: postgres
+        app.kubernetes.io/component: database
+        app.kubernetes.io/part-of: pasb
+    spec:
+      initContainers:
+        - name: init-pgvector
+          # pgvector/pgvector inclui PostgreSQL 16 + extensão pgvector pré-instalada
+          image: pgvector/pgvector:pg16
+          command:
+            - sh
+            - -c
+            - echo "pgvector image pulled and ready"
+      containers:
+        - name: postgres
+          # Usa pgvector/pgvector para suporte nativo a embeddings (InsightFace)
+          image: pgvector/pgvector:pg16
+          ports:
+            - containerPort: 5432
+              name: postgres
+          env:
+            - name: PGDATA
+              value: /var/lib/postgresql/data/pgdata
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-admin-secret
+                  key: postgres-password
+          volumeMounts:
+            - name: data
+              mountPath: /var/lib/postgresql/data
+            - name: init-scripts
+              mountPath: /docker-entrypoint-initdb.d
+          resources:
+            requests:
+              cpu: "250m"
+              memory: "512Mi"
+            limits:
+              cpu: "1"
+              memory: "2Gi"
+          livenessProbe:
+            exec:
+              command:
+                - pg_isready
+                - -U
+                - postgres
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+          readinessProbe:
+            exec:
+              command:
+                - pg_isready
+                - -U
+                - postgres
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            timeoutSeconds: 3
+            failureThreshold: 3
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: postgres-pvc
+        - name: init-scripts
+          configMap:
+            name: postgres-init-scripts
+---
+# ConfigMap com scripts de inicialização
+# Cria as extensões necessárias automaticamente no primeiro boot
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: postgres-init-scripts
+  namespace: postgres
+  labels:
+    app.kubernetes.io/part-of: pasb
+data:
+  01-init-extensions.sql: |
+    -- Habilitar extensão pgvector para armazenamento de embeddings (InsightFace)
+    CREATE EXTENSION IF NOT EXISTS vector;
+
+    -- Criar databases das aplicações
+    CREATE DATABASE n8n;
+    CREATE DATABASE grafana;
+    CREATE DATABASE identity_service;
+
+    -- Criar schema PASB no banco identity_service
+    \c identity_service
+    CREATE EXTENSION IF NOT EXISTS vector;
+
+    CREATE TABLE IF NOT EXISTS person (
+        id               BIGSERIAL PRIMARY KEY,
+        external_id_powerschool VARCHAR(64),
+        external_id_dimep       VARCHAR(64),
+        external_id_rh          VARCHAR(64),
+        type             VARCHAR(32) NOT NULL CHECK (type IN ('student','guardian','staff_academic','staff_admin')),
+        name             VARCHAR(255) NOT NULL,
+        status           VARCHAR(16) NOT NULL DEFAULT 'active',
+        created_at       TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        updated_at       TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    );
+
+    CREATE TABLE IF NOT EXISTS person_relation (
+        id               BIGSERIAL PRIMARY KEY,
+        person_id        BIGINT NOT NULL REFERENCES person(id),
+        related_person_id BIGINT NOT NULL REFERENCES person(id),
+        relation_type    VARCHAR(32) NOT NULL,
+        created_at       TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    );
+
+    CREATE TABLE IF NOT EXISTS person_photo (
+        id               BIGSERIAL PRIMARY KEY,
+        person_id        BIGINT NOT NULL REFERENCES person(id),
+        source_system    VARCHAR(32) NOT NULL,
+        storage_path     TEXT NOT NULL,
+        is_primary       BOOLEAN NOT NULL DEFAULT FALSE,
+        created_at       TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    );
+
+    CREATE TABLE IF NOT EXISTS person_embedding (
+        id               BIGSERIAL PRIMARY KEY,
+        person_id        BIGINT NOT NULL REFERENCES person(id),
+        embedding        vector(512),
+        model_name       VARCHAR(64) NOT NULL,
+        version          VARCHAR(32) NOT NULL,
+        source_photo_id  BIGINT REFERENCES person_photo(id),
+        created_at       TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    );
+
+    CREATE INDEX IF NOT EXISTS idx_person_embedding_vector
+        ON person_embedding USING ivfflat (embedding vector_cosine_ops);
+
+    CREATE TABLE IF NOT EXISTS access_event (
+        id               BIGSERIAL PRIMARY KEY,
+        person_id        BIGINT REFERENCES person(id),
+        event_type       VARCHAR(32) NOT NULL,
+        camera_id        VARCHAR(64) NOT NULL,
+        location         VARCHAR(128),
+        direction        VARCHAR(16),
+        timestamp        TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        confidence       FLOAT,
+        raw_snapshot_path TEXT,
+        created_at       TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    );
+
+    CREATE TABLE IF NOT EXISTS class_schedule (
+        id               BIGSERIAL PRIMARY KEY,
+        student_id       BIGINT NOT NULL REFERENCES person(id),
+        weekday          SMALLINT NOT NULL CHECK (weekday BETWEEN 0 AND 6),
+        start_time       TIME NOT NULL,
+        end_time         TIME NOT NULL,
+        location         VARCHAR(128)
+    );
+---
+# Service do PostgreSQL
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres
+  namespace: postgres
+  labels:
+    app.kubernetes.io/name: postgres
+    app.kubernetes.io/part-of: pasb
+spec:
+  selector:
+    app: postgres
+  ports:
+    - port: 5432
+      targetPort: 5432
+      name: postgres
+  type: ClusterIP

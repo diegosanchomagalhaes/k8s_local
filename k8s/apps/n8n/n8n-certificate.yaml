@@ -1,0 +1,15 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: n8n-tls
+  namespace: n8n
+  labels:
+    app.kubernetes.io/name: n8n
+    app.kubernetes.io/part-of: pasb
+spec:
+  secretName: n8n-tls
+  issuerRef:
+    name: pasb-selfsigned
+    kind: ClusterIssuer
+  dnsNames:
+    - n8n.local.127.0.0.1.nip.io

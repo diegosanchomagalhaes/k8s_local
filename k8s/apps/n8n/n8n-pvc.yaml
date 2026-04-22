@@ -1,0 +1,43 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: n8n-pvc
+  namespace: n8n
+  labels:
+    app: n8n
+    component: storage
+    app.kubernetes.io/part-of: pasb
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: hostpath-storage
+  selector:
+    matchLabels:
+      app: n8n
+      component: storage
+      storage-type: hostpath
+  resources:
+    requests:
+      storage: 5Gi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: n8n-data-pvc
+  namespace: n8n
+  labels:
+    app: n8n
+    component: data
+    app.kubernetes.io/part-of: pasb
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: hostpath-storage
+  selector:
+    matchLabels:
+      app: n8n
+      component: data
+      storage-type: hostpath
+  resources:
+    requests:
+      storage: 2Gi
