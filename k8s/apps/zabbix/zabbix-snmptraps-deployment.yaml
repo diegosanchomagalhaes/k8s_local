@@ -28,6 +28,13 @@ spec:
             - containerPort: 162
               name: snmp-trap
               protocol: UDP
+          resources:
+            requests:
+              cpu: 50m
+              memory: 64Mi
+            limits:
+              cpu: 200m
+              memory: 256Mi
           volumeMounts:
             - name: snmptraps-data
               mountPath: /var/lib/zabbix/snmptraps
